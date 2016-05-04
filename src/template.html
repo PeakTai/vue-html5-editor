@@ -1,0 +1,26 @@
+<div class="vue-html5-editor" :style="{'z-index':zIndex}" :class="{'full-screen':fullScreen}">
+    <div class="toolbar" v-el:toolbar>
+        <ul>
+            <template v-for="btn in btns">
+                <li v-if="btn.action=='execCommand'" :title="btn.title" @click="execCommand(btn.arg)">
+                    <img :src="btn.icon" height="16px" width="16px">
+                </li>
+                <li v-if="btn.action=='toggleDashboard'" :title="btn.title" @click="toggleDashboard(btn.arg)">
+                    <img :src="btn.icon" height="16px" width="16px">
+                </li>
+            </template>
+            <li title="全屏" @click="fullScreen=!fullScreen" v-if="!disableFullScreen">
+                <img src="./icon/full-screen.jpg" width="16px" height="16px">
+            </li>
+        </ul>
+        <div class="dashboard" v-show="dashboard" :style="{'max-height':contentHeight+'px'}">
+            <dashboard-link v-show="dashboard=='link'"></dashboard-link>
+            <dashboard-image v-show="dashboard=='image'" :config="image"></dashboard-image>
+            <dashboard-color v-show="dashboard=='color'"></dashboard-color>
+            <dashboard-table v-show="dashboard=='table'"></dashboard-table>
+        </div>
+    </div>
+    <div class="content" v-el:content contenteditable="true" @click="toggleDashboard(dashboard)"
+         :style="{'height':contentHeight+'px'}">
+    </div>
+</div>
