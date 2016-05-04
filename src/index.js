@@ -25,5 +25,5 @@ export const install = (Vue, options) => {
         }
     })
 
-    Vue.component("html5-editor", component)
+    Vue.component(options.name || "html5-editor", component)
 }
