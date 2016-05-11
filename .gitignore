@@ -29,6 +29,3 @@ node_modules
 # idea config
 .idea
 *.iml
-
-dist/*.js
-dist/*.map
