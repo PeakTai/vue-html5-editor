@@ -5,9 +5,11 @@
 ## 安装并使用
 
 #### nodejs
-```js
+
+```bash
 npm install vue-html5-editor --save-dev
 ```
+
 ```js
 var editor = require("vue-html5-editor")
 Vue.use(editor,options);
@@ -19,16 +21,18 @@ Vue.use(editor,options);
 <script src="serverpath/vue-html5-editor.js"></script>
 ```
 引入了js后，会有一个全局变量`VueHtml5Editor`
+
 ```js
 Vue.use(VueHtml5Editor, { name : "editor"})
 ```
 模板示例代码
+
 ```html
 <editor :content="content" :height="500"></editor>
 ```
 ### 全局安装选项
 
-```
+```js
 Vue.use(VueHtml5Editor, {
     //全局组件的名称
     name: "editor",
