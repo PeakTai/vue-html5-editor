@@ -35,13 +35,13 @@ Vue.use(VueHtml5Editor, {
     //图片相关配置
     image: {
         //服务器上传地址
-	//服务器需要返回json数据类似 {ok:false,msg:"错误信息"} 或者 {ok:true,data:"图片地址"}
+	    //服务器需要返回json数据类似 {ok:false,msg:"错误信息"} 或者 {ok:true,data:"图片地址"}
         server: null,
         //图片上传请求参数名称
         fieldName: "image",
         //大小限制,默认512k
         sizeLimit: 512 * 1024,
-        //是否压缩,如果设置为false,后面两个参数无用
+        //是否压缩,如果设置为false,后面3个参数无用
         compress: true,
         //压缩后的最大宽度
         width: 1600,

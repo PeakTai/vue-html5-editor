@@ -1,6 +1,6 @@
 {
   "name": "vue-html5-editor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A WYSIWYG text editor base on html5 and vue",
   "repository": {
     "type": "git",

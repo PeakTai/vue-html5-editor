@@ -109,7 +109,12 @@
                         component.upload.progressComputable = false
                     }
                 }
-                xhr.onload = function () {
+                xhr.onload = function (e) {
+                    if (xhr.status != 200) {
+                        component.upload.status = "error"
+                        console.log("upload error", e)
+                        return
+                    }
                     component.upload.status = "success"
                     var json = JSON.parse(xhr.responseText)
                     this.upload.status = "ready"
