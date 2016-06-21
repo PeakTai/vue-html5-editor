@@ -1,12 +1,12 @@
 {
   "name": "vue-html5-editor",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A WYSIWYG text editor base on html5 and vue",
   "repository": {
     "type": "git",
     "url": "https://github.com/PeakTai/vue-verify"
   },
-  "main": "src/index.js",
+  "main": "dist/vue-html5-editor.js",
   "scripts": {
     "build": "webpack --progress",
     "test": "echo \"Error: no test specified\" && exit 1"
