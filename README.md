@@ -2,6 +2,10 @@
 
 一个vue的html5富文本编辑器插件，简洁易用
 
+![编辑器图片](http://tai.coding.me/vue-html5-editor/editor.png)
+
+[查看在线演示](http://tai.coding.me/vue-html5-editor/server-upload.html)
+
 ## 安装并使用
 
 #### nodejs
