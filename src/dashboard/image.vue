@@ -1,4 +1,5 @@
 <template>
+
     <div :style="{'height':$parent.contentHeight+'px'}">
         <form @submit="insertImage" v-if="upload.status=='ready'">
             <input type="text" v-model="url" maxlength="255" placeholder="输入图片文件地址">
@@ -8,7 +9,7 @@
                    accept="image/png,image/jpeg,image/gif,image/jpg">
         </form>
         <div v-if="upload.status=='progress'">
-            正在进行上传,进度:{{upload.complete}}
+            正在进行上传,进度:{{progressComputable ? "未知" : upload.complete}}
         </div>
         <div v-if="upload.status=='success'">
             文件上传完成,请稍等...
@@ -22,9 +23,12 @@
             <button type="button" @click="reset">点击重新上传</button>
         </div>
     </div>
+
 </template>
+
 <script>
-    import lrz from 'lrz'
+
+    import lrz from '../../node_modules/lrz/dist/lrz.all.bundle'
     export default {
         props: {
             config: {
@@ -32,11 +36,11 @@
                 type: Object
             }
         },
-        data(){
+        data() {
             return {
                 url: "",
                 upload: {
-                    status: "ready",//progress,success,error,abort
+                    status: "ready", //progress,success,error,abort
                     progressComputable: false,
                     complete: 0
                 }
@@ -44,11 +48,11 @@
             }
         },
         methods: {
-            pick(){
+            pick() {
                 let event = new Event("click")
                 this.$els.file.dispatchEvent(event)
             },
-            insertImage(e){
+            insertImage(e) {
                 e.preventDefault()
                 if (!this.url) {
                     return
@@ -56,7 +60,7 @@
                 this.$parent.execCommand("insertImage", this.url)
                 this.url = null
             },
-            selectFile(e){
+            selectFile(e) {
                 let component = this
                 let file = this.$els.file.files[0]
                 if (file.size > component.config.size_limit) {
@@ -74,7 +78,8 @@
                     }).then(function (rst) {
                         component.config.server ? component.uploadFile(rst.file) : component.insertBase64(rst.base64)
                     }).catch(function (err) {
-                        alert("出错了:" + err)
+                        component.upload.status = "error"
+                        console.log("upload error", err)
                     })
                     return
                 }
@@ -89,12 +94,12 @@
                     return
                 }
                 //上传服务器
-                uploadFile(file)
+                component.uploadFile(file)
             },
             insertBase64: function (data) {
                 this.$parent.execCommand("insertimage", data)
             },
-            uploadFile(file){
+            uploadFile(file) {
                 var component = this
                 var formData = new FormData();
                 formData.append(component.config.fieldName, file)
@@ -117,13 +122,12 @@
                     }
                     component.upload.status = "success"
                     var json = JSON.parse(xhr.responseText)
-                    this.upload.status = "ready"
                     if (!json.ok) {
                         alert(json.msg)
                     } else {
                         component.$parent.execCommand("insertImage", json.data)
                     }
-
+                    component.upload.status = "ready"
                 }
                 xhr.onerror = function (e) {
                     component.upload.status = "error"
@@ -138,4 +142,5 @@
             }
         }
     }
+
 </script>

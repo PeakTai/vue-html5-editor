@@ -1,6 +1,6 @@
 {
   "name": "vue-html5-editor",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A WYSIWYG text editor base on html5 and vue",
   "repository": {
     "type": "git",
@@ -8,7 +8,7 @@
   },
   "main": "dist/vue-html5-editor.js",
   "scripts": {
-    "build": "webpack --progress",
+    "build": "webpack --progress --hide-modules",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
