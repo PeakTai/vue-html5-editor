@@ -49,8 +49,7 @@
         },
         methods: {
             pick() {
-                let event = new Event("click")
-                this.$els.file.dispatchEvent(event)
+                this.$els.file.click()
             },
             insertImage(e) {
                 e.preventDefault()

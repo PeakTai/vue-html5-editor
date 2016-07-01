@@ -1,6 +1,6 @@
 /*!
- * Vue-html5-editor 0.1.4
- * (c) Peak TaiMon Jun 27 2016 17:20:40 GMT+0800 (CST)
+ * Vue-html5-editor 0.1.5
+ * (c) Peak TaiFri Jul 01 2016 09:40:25 GMT+0800 (CST)
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -774,8 +774,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    methods: {
 	        pick: function pick() {
-	            var event = new Event("click");
-	            this.$els.file.dispatchEvent(event);
+	            this.$els.file.click();
 	        },
 	        insertImage: function insertImage(e) {
 	            e.preventDefault();
