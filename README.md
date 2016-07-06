@@ -64,7 +64,7 @@ Vue.use(VueHtml5Editor, {
 ### 编辑器组件属性
 
 ```html
-<editor :content.sync="content" :height="500"></editor>
+<editor :content.sync="content" :height="500" :z-index="1000" :disable-full-screen="false"></editor>
 ```
 
 #### content
@@ -74,3 +74,12 @@ Vue.use(VueHtml5Editor, {
 #### height
 
 编辑器高度，单位像素，数值型
+
+### z-index
+
+编辑器的显示层级
+
+### disable-full-screen
+
+是否禁用全屏功能
+
