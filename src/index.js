@@ -1,11 +1,11 @@
-import editor from "./editor.vue"
-import btns from "./buttons"
+import editor from "./editor.vue";
+import btns from "./buttons";
 /**
  * 安装组件
  * @param Vue   {Vue}
  * @param options {Object} 选项,可配置按钮与图片上传
  */
-export const install = (Vue, options) => {
+exports.install = (Vue, options) => {
     //图片默认配置
     let image = {
         server: null,

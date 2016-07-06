@@ -28,7 +28,7 @@
 
 <script>
 
-    import lrz from '../../node_modules/lrz/dist/lrz.all.bundle'
+    import lrz from './lrz.all.bundle'
     export default {
         props: {
             config: {
