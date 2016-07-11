@@ -1,6 +1,6 @@
 /*!
- * Vue-html5-editor 0.1.6
- * (c) Peak TaiWed Jul 06 2016 19:55:11 GMT+0800 (CST)
+ * Vue-html5-editor 0.1.7
+ * (c) Peak TaiMon Jul 11 2016 19:58:58 GMT+0800 (CST)
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -768,6 +768,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 
 	    methods: {
+	        reset: function reset() {
+	            this.upload.status = "ready";
+	        },
 	        pick: function pick() {
 	            this.$els.file.click();
 	        },

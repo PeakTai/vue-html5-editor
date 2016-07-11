@@ -48,6 +48,9 @@
             }
         },
         methods: {
+            reset(){
+                this.upload.status = "ready"
+            },
             pick() {
                 this.$els.file.click()
             },
