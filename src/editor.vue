@@ -5,6 +5,8 @@
     import dashboardImage from "./dashboard/image.vue"
     import dashboardLink from "./dashboard/link.vue"
     import dashboardTable from "./dashboard/table.vue"
+
+
     export default {
         props: {
             content: {

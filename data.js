@@ -1,42 +1,3 @@
-# vue-html5-editor
-
-一个vue的html5富文本编辑器插件，简洁易用
-
-![编辑器图片](http://tai.coding.me/vue-html5-editor/editor.png)
-
-[查看在线演示](http://tai.coding.me/vue-html5-editor/server-upload.html)
-
-## 安装并使用
-
-#### nodejs
-
-```bash
-npm install vue-html5-editor --save-dev
-```
-
-```js
-var editor = require("vue-html5-editor")
-Vue.use(editor,options);
-```
-
-### 浏览器
-
-```html
-<script src="serverpath/vue-html5-editor.js"></script>
-```
-引入了js后，会有一个全局变量`VueHtml5Editor`
-
-```js
-Vue.use(VueHtml5Editor, { name : "editor"})
-```
-模板示例代码
-
-```html
-<editor :content="content" :height="500"></editor>
-```
-### 全局安装选项
-
-```js
 Vue.use(VueHtml5Editor, {
     //全局组件的名称
     name: "editor",
@@ -58,7 +19,7 @@ Vue.use(VueHtml5Editor, {
         //jpeg质量
         quality: 80
     },
-    //图标配置,编辑器默认使用fontawesome图标,可自定义图标的class进行配置
+    //图标配置,编辑器默认使用fontawesome图标,需要引入依赖
     icons: {
         //加粗
         bold: "fa fa-bold",
@@ -90,27 +51,3 @@ Vue.use(VueHtml5Editor, {
         fullScreen: "fa fa-arrows-alt"
     }
 })
-```
-
-### 编辑器组件属性
-
-```html
-<editor :content.sync="content" :height="500" :z-index="1000" :disable-full-screen="false"></editor>
-```
-
-#### content
-
-编辑内容，需要双向同步，字符串类型
-
-#### height
-
-编辑器高度，单位像素，数值型
-
-### z-index
-
-编辑器的显示层级
-
-### disable-full-screen
-
-是否禁用全屏功能
-

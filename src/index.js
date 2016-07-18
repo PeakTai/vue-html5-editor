@@ -1,5 +1,6 @@
 import editor from "./editor.vue";
 import btns from "./buttons";
+import defaultIcons from "./icons";
 /**
  * 安装组件
  * @param Vue   {Vue}
@@ -18,10 +19,11 @@ exports.install = (Vue, options) => {
     }
     options = options || {}
     image = Vue.util.extend(image, options.image || {})
+    let icons = Vue.util.extend(defaultIcons, options.icons || {})
 
     let component = Vue.extend(editor).extend({
         data () {
-            return {btns, image}
+            return {btns, icons, image}
         }
     })
 

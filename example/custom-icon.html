@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue html5 editor demo</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+    <script src="../dist/vue-html5-editor.js"></script>
+    <script src="//cdn.bootcss.com/vue/1.0.17/vue.js"></script>
+    <style>
+        #app {
+            margin: 50px auto;
+            width: 800px;
+            max-width: 100%;
+        }
+
+        .custom-icon {
+            background-size: 100% 100%;
+            display: inline-block;
+        }
+
+        .custom-icon.blod {
+            background-image: url(custom-icons/blod.gif);
+        }
+
+        .custom-icon.color {
+            background-image: url(custom-icons/color.gif);
+        }
+
+        .custom-icon.eraser {
+            background-image: url(custom-icons/eraser.gif);
+        }
+
+        .custom-icon.full-screen {
+            background-image: url(custom-icons/full-screen.gif);
+        }
+
+        .custom-icon.hr {
+            background-image: url(custom-icons/hr.gif);
+        }
+
+        .custom-icon.image {
+            background-image: url(custom-icons/image.gif);
+        }
+
+        .custom-icon.italic {
+            background-image: url(custom-icons/italic.gif);
+        }
+
+        .custom-icon.link {
+            background-image: url(custom-icons/link.gif);
+        }
+
+        .custom-icon.ol {
+            background-image: url(custom-icons/ol.gif);
+        }
+
+        .custom-icon.ul {
+            background-image: url(custom-icons/ul.gif);
+        }
+
+        .custom-icon.table {
+            background-image: url(custom-icons/table.gif);
+        }
+
+        .custom-icon.underline {
+            background-image: url(custom-icons/underline.gif);
+        }
+
+        .custom-icon.undo {
+            background-image: url(custom-icons/undo.gif);
+        }
+
+        .custom-icon.unlink {
+            background-image: url(custom-icons/unlink.gif);
+        }
+
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <html5-editor :content.sync="content" :height="500"></html5-editor>
+</div>
+<script>
+    Vue.use(VueHtml5Editor, {
+        image: {compress: false},
+        icons: {
+            bold: "custom-icon blod",
+            italic: "custom-icon italic",
+            underline: "custom-icon underline",
+            color: "custom-icon color",
+            link: "custom-icon link",
+            unlink: "custom-icon unlink",
+            ol: "custom-icon ol",
+            ul: "custom-icon ul",
+            hr: "custom-icon hr",
+            table: "custom-icon table",
+            image: "custom-icon image",
+            eraser: "custom-icon eraser",
+            undo: "custom-icon undo",
+            fullScreen: "custom-icon full-screen"
+        }
+    })
+    new Vue({
+        el: "#app",
+        data: {
+            content: "<h3>vue html5 editor</h3>",
+        }
+    })
+</script>
+</body>
+</html>

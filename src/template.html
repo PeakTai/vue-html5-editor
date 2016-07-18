@@ -3,14 +3,14 @@
         <ul>
             <template v-for="btn in btns">
                 <li v-if="btn.action=='execCommand'" :title="btn.title" @click="execCommand(btn.arg)">
-                    <img :src="btn.icon" height="16px" width="16px">
+                    <span class="icon" :class="icons[btn.name]"></span>
                 </li>
                 <li v-if="btn.action=='toggleDashboard'" :title="btn.title" @click="toggleDashboard(btn.arg)">
-                    <img :src="btn.icon" height="16px" width="16px">
+                    <span class="icon" :class="icons[btn.name]"></span>
                 </li>
             </template>
             <li title="全屏" @click="fullScreen=!fullScreen" v-if="!disableFullScreen">
-                <img src="./icon/full-screen.jpg" width="16px" height="16px">
+                <span class="icon" :class="icons['fullScreen']"></span>
             </li>
         </ul>
         <div class="dashboard" v-show="dashboard" :style="{'max-height':contentHeight+'px'}">
