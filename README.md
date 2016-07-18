@@ -4,7 +4,7 @@
 
 ![编辑器图片](http://tai.coding.me/vue-html5-editor/editor.png)
 
-[查看在线演示](http://tai.coding.me/vue-html5-editor/server-upload.html)
+[查看在线演示](http://tai.coding.me/vue-html5-editor)
 
 ## 安装并使用
 
