@@ -24,7 +24,7 @@ module.exports = {
         ]
     },
     plugins: [
-        new webpack.BannerPlugin("Vue-html5-editor " + package.version + "\n(c) Peak Tai" + new Date()),
+        new webpack.BannerPlugin("Vue-html5-editor " + package.version + "\nhttps://github.com/PeakTai/vue-html5-editor"),
         new webpack.DefinePlugin({
             ROOT: JSON.stringify(path.normalize(__dirname)),
         })

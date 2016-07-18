@@ -54,15 +54,9 @@
         },
         methods: {
             toggleDashboard (dashboard) {
-                if (this.loading) {
-                    return
-                }
                 this.dashboard == dashboard ? this.dashboard = null : this.dashboard = dashboard
             },
             execCommand (command, arg) {
-                if (this.loading) {
-                    return
-                }
                 this.restoreSelection()
                 document.execCommand(command, false, arg)
                 this.content = this.$els.content.innerHTML
@@ -87,6 +81,14 @@
                 selection.removeAllRanges()
                 if (this.range) {
                     selection.addRange(this.range)
+                } else {
+                    let content = this.$els.content
+                    let div = document.createElement("div")
+                    let range = document.createRange()
+                    content.appendChild(div)
+                    range.setStart(div, 0)
+                    range.setEnd(div, 0)
+                    selection.addRange(range)
                 }
             }
         },

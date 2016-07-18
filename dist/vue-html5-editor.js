@@ -1,6 +1,6 @@
 /*!
- * Vue-html5-editor 0.1.7
- * (c) Peak TaiMon Jul 11 2016 19:58:58 GMT+0800 (CST)
+ * Vue-html5-editor 0.1.8
+ * https://github.com/PeakTai/vue-html5-editor
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -526,15 +526,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    methods: {
 	        toggleDashboard: function toggleDashboard(dashboard) {
-	            if (this.loading) {
-	                return;
-	            }
 	            this.dashboard == dashboard ? this.dashboard = null : this.dashboard = dashboard;
 	        },
 	        execCommand: function execCommand(command, arg) {
-	            if (this.loading) {
-	                return;
-	            }
 	            this.restoreSelection();
 	            document.execCommand(command, false, arg);
 	            this.content = this.$els.content.innerHTML;
@@ -558,6 +552,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            selection.removeAllRanges();
 	            if (this.range) {
 	                selection.addRange(this.range);
+	            } else {
+	                var content = this.$els.content;
+	                var div = document.createElement("div");
+	                var range = document.createRange();
+	                content.appendChild(div);
+	                range.setStart(div, 0);
+	                range.setEnd(div, 0);
+	                selection.addRange(range);
 	            }
 	        }
 	    },
