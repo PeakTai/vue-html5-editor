@@ -504,12 +504,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        disableFullScreen: {
 	            type: Boolean,
 	            default: false
+	        },
+	        autoHeight: {
+	            type: Boolean,
+	            default: true
 	        }
 	    },
 	    data: function data() {
 	        return {
 	            fullScreen: false,
-	            dashboard: null
+	            dashboard: null,
+	            dashboardStyle: {}
 	        };
 	    },
 
@@ -519,17 +524,51 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (val != content) {
 	                this.$els.content.innerHTML = val;
 	            }
-	        }
-	    },
-	    computed: {
-	        contentHeight: function contentHeight() {
-	            if (!this.fullScreen) {
-	                return this.height;
+	        },
+	        dashboard: function dashboard(val) {
+	            if (val) {
+	                this.computeDashboardStyle();
 	            }
-	            return window.innerHeight - (this.$els.toolbar.clientHeight + 1);
+	        },
+	        fullScreen: function fullScreen(val) {
+	            var component = this;
+	            component.$nextTick(function () {
+	                component.computeDashboardStyle();
+	            });
+	            if (val) {
+	                component.parentEl = component.$el.parentNode;
+	                component.nextEl = component.$el.nextSibling;
+	                component.$appendTo(document.body);
+	                return;
+	            }
+	            if (component.nextEl) {
+	                component.$before(component.nextEl);
+	                return;
+	            }
+	            component.$appendTo(component.parentEl);
 	        }
 	    },
+
+	    computed: {
+	        contentStyle: function contentStyle() {
+	            var style = {};
+	            if (this.fullScreen) {
+	                style.height = window.innerHeight - (this.$els.toolbar.clientHeight + 1) + "px";
+	                return style;
+	            }
+	            if (!this.autoHeight) {
+	                style.height = this.height + 'px';
+	                return style;
+	            }
+	            style["min-height"] = this.height + 'px';
+	            return style;
+	        }
+	    },
+
 	    methods: {
+	        computeDashboardStyle: function computeDashboardStyle() {
+	            this.dashboardStyle = { 'max-height': this.$els.content.clientHeight + 'px' };
+	        },
 	        toggleDashboard: function toggleDashboard(dashboard) {
 	            this.dashboard == dashboard ? this.dashboard = null : this.dashboard = dashboard;
 	        },
@@ -568,6 +607,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }
 	    },
+
 	    ready: function ready() {
 	        var component = this;
 	        var content = component.$els.content;
@@ -876,7 +916,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// </script>
 	// <template>
 	//
-	//     <div :style="{'height':$parent.contentHeight+'px'}">
+	//     <div>
 	//         <form @submit="insertImage" v-if="upload.status=='ready'">
 	//             <input type="text" v-model="url" maxlength="255" placeholder="输入图片文件地址">
 	//             <button type="submit">插入网络图片</button>
@@ -2940,7 +2980,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 85 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n<div :style=\"{'height':$parent.contentHeight+'px'}\">\n    <form @submit=\"insertImage\" v-if=\"upload.status=='ready'\">\n        <input type=\"text\" v-model=\"url\" maxlength=\"255\" placeholder=\"输入图片文件地址\">\n        <button type=\"submit\">插入网络图片</button>\n        <button type=\"button\" @click=\"pick\">本地上传</button>\n        <input type=\"file\" v-el:file style=\"display: none !important;\" @change=\"selectFile\"\n               accept=\"image/png,image/jpeg,image/gif,image/jpg\">\n    </form>\n    <div v-if=\"upload.status=='progress'\">\n        正在进行上传,进度:{{progressComputable ? \"未知\" : upload.complete}}\n    </div>\n    <div v-if=\"upload.status=='success'\">\n        文件上传完成,请稍等...\n    </div>\n    <div v-if=\"upload.status=='error'\">\n        上传发生错误,\n        <button type=\"button\" @click=\"reset\">点击重新上传</button>\n    </div>\n    <div v-if=\"upload.status=='abort'\">\n        上传被中断,\n        <button type=\"button\" @click=\"reset\">点击重新上传</button>\n    </div>\n</div>\n\n";
+	module.exports = "\n\n<div>\n    <form @submit=\"insertImage\" v-if=\"upload.status=='ready'\">\n        <input type=\"text\" v-model=\"url\" maxlength=\"255\" placeholder=\"输入图片文件地址\">\n        <button type=\"submit\">插入网络图片</button>\n        <button type=\"button\" @click=\"pick\">本地上传</button>\n        <input type=\"file\" v-el:file style=\"display: none !important;\" @change=\"selectFile\"\n               accept=\"image/png,image/jpeg,image/gif,image/jpg\">\n    </form>\n    <div v-if=\"upload.status=='progress'\">\n        正在进行上传,进度:{{progressComputable ? \"未知\" : upload.complete}}\n    </div>\n    <div v-if=\"upload.status=='success'\">\n        文件上传完成,请稍等...\n    </div>\n    <div v-if=\"upload.status=='error'\">\n        上传发生错误,\n        <button type=\"button\" @click=\"reset\">点击重新上传</button>\n    </div>\n    <div v-if=\"upload.status=='abort'\">\n        上传被中断,\n        <button type=\"button\" @click=\"reset\">点击重新上传</button>\n    </div>\n</div>\n\n";
 
 /***/ },
 /* 86 */
@@ -3109,7 +3149,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 92 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"vue-html5-editor\" :style=\"{'z-index':zIndex}\" :class=\"{'full-screen':fullScreen}\">\n    <div class=\"toolbar\" :style=\"{'z-index':zIndex+1}\" v-el:toolbar>\n        <ul>\n            <template v-for=\"btn in btns\">\n                <li v-if=\"btn.action=='execCommand'\" :title=\"btn.title\" @click=\"execCommand(btn.arg)\">\n                    <span class=\"icon\" :class=\"icons[btn.name]\"></span>\n                </li>\n                <li v-if=\"btn.action=='toggleDashboard'\" :title=\"btn.title\" @click=\"toggleDashboard(btn.arg)\">\n                    <span class=\"icon\" :class=\"icons[btn.name]\"></span>\n                </li>\n            </template>\n            <li title=\"全屏\" @click=\"fullScreen=!fullScreen\" v-if=\"!disableFullScreen\">\n                <span class=\"icon\" :class=\"icons['fullScreen']\"></span>\n            </li>\n        </ul>\n        <div class=\"dashboard\" v-show=\"dashboard\" :style=\"{'max-height':contentHeight+'px'}\">\n            <dashboard-link v-show=\"dashboard=='link'\"></dashboard-link>\n            <dashboard-image v-show=\"dashboard=='image'\" :config=\"image\"></dashboard-image>\n            <dashboard-color v-show=\"dashboard=='color'\"></dashboard-color>\n            <dashboard-table v-show=\"dashboard=='table'\"></dashboard-table>\n        </div>\n    </div>\n    <div class=\"content\" v-el:content contenteditable=\"true\" @click=\"toggleDashboard(dashboard)\"\n         :style=\"{'height':contentHeight+'px'}\">\n    </div>\n</div>\n";
+	module.exports = "<div class=\"vue-html5-editor\" :style=\"{'z-index':zIndex}\" :class=\"{'full-screen':fullScreen}\">\n    <div class=\"toolbar\" :style=\"{'z-index':zIndex+1}\" v-el:toolbar>\n        <ul>\n            <template v-for=\"btn in btns\">\n                <li v-if=\"btn.action=='execCommand'\" :title=\"btn.title\" @click=\"execCommand(btn.arg)\">\n                    <span class=\"icon\" :class=\"icons[btn.name]\"></span>\n                </li>\n                <li v-if=\"btn.action=='toggleDashboard'\" :title=\"btn.title\" @click=\"toggleDashboard(btn.arg)\">\n                    <span class=\"icon\" :class=\"icons[btn.name]\"></span>\n                </li>\n            </template>\n            <li title=\"全屏\" @click=\"fullScreen=!fullScreen\" v-if=\"!disableFullScreen\">\n                <span class=\"icon\" :class=\"icons['fullScreen']\"></span>\n            </li>\n        </ul>\n        <div class=\"dashboard\" v-show=\"dashboard\" :style=\"dashboardStyle\">\n            <dashboard-link v-show=\"dashboard=='link'\"></dashboard-link>\n            <dashboard-image v-show=\"dashboard=='image'\" :config=\"image\"></dashboard-image>\n            <dashboard-color v-show=\"dashboard=='color'\"></dashboard-color>\n            <dashboard-table v-show=\"dashboard=='table'\"></dashboard-table>\n        </div>\n    </div>\n    <div class=\"content\" v-el:content contenteditable=\"true\" @click=\"toggleDashboard(dashboard)\"\n         :style=\"contentStyle\">\n    </div>\n</div>\n";
 
 /***/ },
 /* 93 */

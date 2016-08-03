@@ -1,6 +1,6 @@
 <template>
 
-    <div :style="{'height':$parent.contentHeight+'px'}">
+    <div>
         <form @submit="insertImage" v-if="upload.status=='ready'">
             <input type="text" v-model="url" maxlength="255" placeholder="输入图片文件地址">
             <button type="submit">插入网络图片</button>

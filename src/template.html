@@ -13,7 +13,7 @@
                 <span class="icon" :class="icons['fullScreen']"></span>
             </li>
         </ul>
-        <div class="dashboard" v-show="dashboard" :style="{'max-height':contentHeight+'px'}">
+        <div class="dashboard" v-show="dashboard" :style="dashboardStyle">
             <dashboard-link v-show="dashboard=='link'"></dashboard-link>
             <dashboard-image v-show="dashboard=='image'" :config="image"></dashboard-image>
             <dashboard-color v-show="dashboard=='color'"></dashboard-color>
@@ -21,6 +21,6 @@
         </div>
     </div>
     <div class="content" v-el:content contenteditable="true" @click="toggleDashboard(dashboard)"
-         :style="{'height':contentHeight+'px'}">
+         :style="contentStyle">
     </div>
 </div>
