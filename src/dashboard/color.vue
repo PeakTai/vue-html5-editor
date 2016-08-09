@@ -1,4 +1,12 @@
-<style lang="less" src="./color.less"></style>
+<style>
+    .vue-html5-editor .color-card {
+        margin: 2px;
+        width: 30px;
+        height: 30px;
+        float: left;
+        cursor: pointer;
+    }
+</style>
 <template>
     <div>
         <div v-for="color in colors" :style="{'background-color':color}" class="color-card" @click="changeColor(color)">
@@ -20,8 +28,7 @@
         },
         methods: {
             changeColor(color){
-                var parent = this.$parent
-                parent.execCommand("foreColor", color)
+                this.$parent.execCommand("foreColor", color)
             }
         }
     }

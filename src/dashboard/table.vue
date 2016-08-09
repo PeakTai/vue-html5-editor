@@ -1,12 +1,12 @@
 <template>
-    <form @submit="insertTable">
+    <form @submit.prevent="insertTable">
         <label>
             行数
-            <input type="number" style="width: 60px" maxlength="2" min="2" v-model="rows">
+            <input type="number" style="width: 60px" maxlength="2" min="2" max="10" v-model="rows">
         </label>
         <label>
             列数
-            <input type="number" style="width: 60px" maxlength="2" min="2" v-model="cols">
+            <input type="number" style="width: 60px" maxlength="2" min="2" max="10" v-model="cols">
         </label>
 
         <button type="submit">确定</button>
@@ -24,13 +24,12 @@
             }
         },
         methods: {
-            insertTable(e){
-                e.preventDefault()
+            insertTable(){
                 let component = this
-                if (component.rows < 2) {
+                if (component.rows < 2 || component.rows > 10) {
                     return
                 }
-                if (component.cols < 2) {
+                if (component.cols < 2 || component.cols > 10) {
                     return
                 }
                 let table = "<table style='border-spacing: 0px; border-collapse: collapse; width: 100%; max-width: 100%; margin-bottom: 0px; border: 1px solid rgb(221, 221, 221); color: rgb(51, 51, 51); font-size: 14px; line-height: 20px; background-color: transparent;'><tbody>"
