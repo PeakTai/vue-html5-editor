@@ -1,6 +1,6 @@
 # vue-html5-editor
 
-一个vue的html5富文本编辑器插件，简洁易用
+一个vue的html5富文本编辑器插件，简洁易用,支持Vue1.0以上版本
 
 ![编辑器图片](http://tai.coding.me/vue-html5-editor/editor.png)
 
@@ -95,7 +95,7 @@ Vue.use(VueHtml5Editor, {
 ### 编辑器组件属性
 
 ```html
-<editor :content.sync="content" :height="500" :z-index="1000" :disable-full-screen="false"></editor>
+<editor :content.sync="content" :height="500" :z-index="1000" :auto-height="true" :disable-full-screen="false"></editor>
 ```
 
 #### content
@@ -108,7 +108,11 @@ Vue.use(VueHtml5Editor, {
 
 ### z-index
 
-编辑器的显示层级
+编辑器的显示层级,默认1000
+
+### auto-height
+
+是否自动增高,默认true
 
 ### disable-full-screen
 
