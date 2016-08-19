@@ -2,25 +2,25 @@
 
     <div>
         <form @submit="insertImage" v-if="upload.status=='ready'">
-            <input type="text" v-model="url" maxlength="255" placeholder="输入图片文件地址">
-            <button type="submit">插入网络图片</button>
-            <button type="button" @click="pick">本地上传</button>
+            <input type="text" v-model="url" maxlength="255" :placeholder="$parent.locale['please enter a url']">
+            <button type="submit">{{$parent.locale.save}}</button>
+            <button type="button" @click="pick">{{$parent.locale.upload}}</button>
             <input type="file" v-el:file style="display: none !important;" @change="selectFile"
                    accept="image/png,image/jpeg,image/gif,image/jpg">
         </form>
         <div v-if="upload.status=='progress'">
-            正在进行上传,进度:{{progressComputable ? "未知" : upload.complete}}
+            {{$parent.locale.progress}}:{{progressComputable ? $parent.locale.unknown : upload.complete}}
         </div>
         <div v-if="upload.status=='success'">
-            文件上传完成,请稍等...
+            {{$parent.locale.["please wait"]}}...
         </div>
         <div v-if="upload.status=='error'">
-            上传发生错误,
-            <button type="button" @click="reset">点击重新上传</button>
+            {{$parent.locale.upload}}&nbsp;{{$parent.locale.error}},
+            <button type="button" @click="reset">{{$parent.locale.reset}}</button>
         </div>
         <div v-if="upload.status=='abort'">
-            上传被中断,
-            <button type="button" @click="reset">点击重新上传</button>
+            {{$parent.locale.upload}}&nbsp;{{$parent.locale.abort}},
+            <button type="button" @click="reset">{{$parent.locale.reset}}</button>
         </div>
     </div>
 
@@ -30,12 +30,6 @@
 
     import lrz from './lrz.all.bundle'
     export default {
-        props: {
-            config: {
-                required: true,
-                type: Object
-            }
-        },
         data() {
             return {
                 url: "",
@@ -64,21 +58,23 @@
             },
             selectFile(e) {
                 let component = this
+                let config = component.$options.module.config
+
                 let file = this.$els.file.files[0]
-                if (file.size > component.config.size_limit) {
+                if (file.size > config.size_limit) {
                     alert("文件过大")
                     return
                 }
                 component.$els.file.value = null
                 //需要压缩
-                if (component.config.compress) {
+                if (config.compress) {
                     lrz(file, {
-                        width: component.config.width,
-                        height: component.config.height,
-                        quality: component.config.quality,
-                        fieldName: component.config.fieldName
+                        width: config.width,
+                        height: config.height,
+                        quality: config.quality,
+                        fieldName: config.fieldName
                     }).then(function (rst) {
-                        component.config.server ? component.uploadFile(rst.file) : component.insertBase64(rst.base64)
+                        config.server ? component.uploadFile(rst.file) : component.insertBase64(rst.base64)
                     }).catch(function (err) {
                         component.upload.status = "error"
                         console.log("upload error", err)
@@ -87,7 +83,7 @@
                 }
                 //不需要压缩
                 //base64
-                if (!component.config.server) {
+                if (!config.server) {
                     var reader = new FileReader()
                     reader.onload = function (e) {
                         component.insertBase64(e.target.result)
@@ -103,8 +99,9 @@
             },
             uploadFile(file) {
                 var component = this
+                let config = component.$options.module.config
                 var formData = new FormData();
-                formData.append(component.config.fieldName, file)
+                formData.append(config.fieldName, file)
                 var xhr = new XMLHttpRequest()
                 xhr.onprogress = function (e) {
                     component.upload.status = "progress"
@@ -139,7 +136,7 @@
                     component.upload.status = "abort"
                     console.log("upload abort", e)
                 }
-                xhr.open("POST", component.config.server)
+                xhr.open("POST", config.server)
                 xhr.send(formData)
             }
         }

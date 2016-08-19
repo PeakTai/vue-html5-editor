@@ -1,15 +1,15 @@
 <template>
     <form @submit.prevent="insertTable">
         <label>
-            行数
+            {{$parent.locale["row count"]}}
             <input type="number" style="width: 60px" maxlength="2" min="2" max="10" v-model="rows">
         </label>
         <label>
-            列数
+            {{$parent.locale["column count"]}}
             <input type="number" style="width: 60px" maxlength="2" min="2" max="10" v-model="cols">
         </label>
 
-        <button type="submit">确定</button>
+        <button type="submit">{{$parent.locale.save}}</button>
     </form>
 </template>
 <script>

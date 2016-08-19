@@ -1,30 +1,87 @@
 import editor from "./editor.vue";
-import btns from "./buttons";
-import defaultIcons from "./icons";
+import moduleText from "./modules/text/index";
+import moduleFont from "./modules/font/index";
+import moduleColor from "./modules/color/index";
+import moduleAlign from "./modules/align/index";
+import moduleList from "./modules/list/index";
+import moduleLink from "./modules/link/index";
+import moduleUnlink from "./modules/unlink/index";
+import moduleTable from "./modules/table/index";
+import moduleImage from "./modules/image/index";
+import moduleEraser from "./modules/eraser/index";
+import moduleFullScreen from "./modules/full-screen/index";
+import moduleInfo from "./modules/info/index";
+import i18nZhCn from "./i18n/zh-cn";
+import i18nEnUs from "./i18n/en-us";
+
 /**
- * 安装组件
+ * install
  * @param Vue   {Vue}
- * @param options {Object} 选项,可配置按钮与图片上传
+ * @param options {Object}
  */
 exports.install = (Vue, options) => {
-    //图片默认配置
-    let image = {
-        server: null,
-        fieldName: "image",
-        sizeLimit: 512 * 1024,//512k
-        compress: true,
-        width: 1600,
-        height: 1600,
-        quality: 80
-    }
+
     options = options || {}
-    image = Vue.util.extend(image, options.image || {})
-    let icons = Vue.util.extend(defaultIcons, options.icons || {})
+
+    //modules
+    let modules = [
+        moduleText,
+        moduleColor,
+        moduleFont,
+        moduleAlign,
+        moduleList,
+        moduleLink,
+        moduleUnlink,
+        moduleTable,
+        moduleImage,
+        moduleEraser,
+        moduleFullScreen,
+        moduleInfo
+    ]
+    //extended modules
+    if (Array.isArray(options.modules)) {
+        let arr = []
+        options.modules.forEach(function (module) {
+            if (module.name) {
+                arr.push(module)
+            }
+        })
+        modules = modules.concat(arr)
+    }
+
+    let components = {}
+    modules.forEach((module)=> {
+
+        //specify the config for each module in options by name
+        let config = options[module.name]
+        module.config = Vue.util.extend(module.config || {}, config || {})
+
+        if (module.dashboard) {
+            //$options.module
+            module.dashboard.module = module
+            components[module.name] = module.dashboard
+        }
+        if (options.icons && options.icons[module.name]) {
+            module.icon = options.icons[module.name]
+        }
+
+        module.hasDashboard = !!module.dashboard
+        //prevent vue sync
+        module.dashboard = null
+    })
+
+    //i18n
+    let i18n = {"zh-cn": i18nZhCn, "en-us": i18nEnUs}
+    i18n = Vue.util.extend(i18n, options.i18n || {})
+    let language = options.language || "en-us"
+    let locale = i18n[language] || i18n["en-us"]
+
 
     let component = Vue.extend(editor).extend({
         data () {
-            return {btns, icons, image}
-        }
+            return {modules, locale}
+        },
+        components
     })
 
     Vue.component(options.name || "html5-editor", component)

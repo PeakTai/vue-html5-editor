@@ -1,7 +1,7 @@
 <template>
     <form @submit.prevent="createLink">
-        <input type="text" placeholder="输入链接地址" v-model="url" maxlength="1024">
-        <button type="submit">生成链接</button>
+        <input type="text" :placeholder="$parent.locale['please enter a url']" v-model="url" maxlength="1024">
+        <button type="submit">{{$parent.locale["create link"]}}</button>
     </form>
 </template>
 <script>

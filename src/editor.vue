@@ -1,12 +1,23 @@
 <style lang="less" src="./style.less"></style>
-<template src="./template.html"></template>
+<template>
+    <div class="vue-html5-editor" :style="{'z-index':zIndex}" :class="{'full-screen':fullScreen}">
+        <div class="toolbar" :style="{'z-index':zIndex+1}" v-el:toolbar>
+            <ul>
+                <li v-for="module in modules" v-if="module.show" :title="locale[module.i18n]"
+                    @click="activeModule(module)">
+                    <span class="icon" :class="module.icon"></span>
+                </li>
+            </ul>
+            <div class="dashboard" v-show="dashboard" :style="dashboardStyle">
+                <div v-if="dashboard" :is="dashboard" keep-alive></div>
+            </div>
+        </div>
+        <div class="content" v-el:content contenteditable="true" @click="toggleDashboard(dashboard)"
+             :style="contentStyle">
+        </div>
+    </div>
+</template>
 <script>
-    import dashboardColor from "./dashboard/color.vue"
-    import dashboardImage from "./dashboard/image.vue"
-    import dashboardLink from "./dashboard/link.vue"
-    import dashboardTable from "./dashboard/table.vue"
-
-
     export default {
         props: {
             content: {
@@ -26,10 +37,6 @@
                 type: Number,
                 default: 1000
             },
-            disableFullScreen: {
-                type: Boolean,
-                default: false
-            },
             autoHeight: {
                 type: Boolean,
                 default: true
@@ -37,14 +44,15 @@
         },
         data () {
             return {
+                //locale: {},
                 fullScreen: false,
                 dashboard: null,
-                dashboardStyle: {}
+                dashboardStyle: {},
             }
         },
         watch: {
             content(val) {
-                var content = this.$els.content.innerHTML
+                let content = this.$els.content.innerHTML
                 if (val != content) {
                     this.$els.content.innerHTML = val
                 }
@@ -55,7 +63,7 @@
                 }
             },
             fullScreen(val){
-                var component = this
+                let component = this
                 component.$nextTick(function () {
                     component.computeDashboardStyle()
                 })
@@ -74,9 +82,8 @@
         }
         ,
         computed: {
-            contentStyle()
-            {
-                var style = {}
+            contentStyle(){
+                let style = {}
                 if (this.fullScreen) {
                     style.height = window.innerHeight - (this.$els.toolbar.clientHeight + 1) + "px"
                     return style
@@ -88,36 +95,29 @@
                 style["min-height"] = this.height + 'px'
                 return style
             }
-        }
-        ,
+        },
         methods: {
-            computeDashboardStyle()
-            {
+            computeDashboardStyle(){
                 this.dashboardStyle = {'max-height': this.$els.content.clientHeight + 'px'}
-            }
-            ,
-            toggleDashboard(dashboard)
-            {
+            },
+            toggleFullScreen(){
+                this.fullScreen = !this.fullScreen
+            },
+            toggleDashboard(dashboard){
                 this.dashboard == dashboard ? this.dashboard = null : this.dashboard = dashboard
-            }
-            ,
-            execCommand(command, arg)
-            {
+            },
+            execCommand(command, arg){
                 this.restoreSelection()
                 document.execCommand(command, false, arg)
                 this.content = this.$els.content.innerHTML
                 this.dashboard = null
-            }
-            ,
-            getCurrentRange()
-            {
-                var selection = window.getSelection()
+            },
+            getCurrentRange(){
+                let selection = window.getSelection()
                 return selection.rangeCount ? selection.getRangeAt(0) : null
-            }
-            ,
-            saveCurrentRange()
-            {
-                var range = this.getCurrentRange()
+            },
+            saveCurrentRange(){
+                let range = this.getCurrentRange()
                 if (!range) {
                     return
                 }
@@ -125,11 +125,9 @@
                         this.$els.content.contains(range.endContainer)) {
                     this.range = range
                 }
-            }
-            ,
-            restoreSelection()
-            {
-                var selection = window.getSelection()
+            },
+            restoreSelection(){
+                let selection = window.getSelection()
                 selection.removeAllRanges()
                 if (this.range) {
                     selection.addRange(this.range)
@@ -142,13 +140,28 @@
                     range.setEnd(div, 0)
                     selection.addRange(range)
                 }
+            },
+            activeModule(module){
+                if (typeof module.handler == "function") {
+                    module.handler(this)
+                    return
+                }
+                if (module.hasDashboard) {
+                    this.toggleDashboard(module.name)
+                }
             }
-        }
-        ,
-        ready()
-        {
-            var component = this
-            var content = component.$els.content
+        },
+        compiled(){
+            let editor = this
+            editor.modules.forEach(function (module) {
+                if (typeof module.init == "function") {
+                    module.init(editor)
+                }
+            })
+        },
+        ready(){
+            let component = this
+            let content = component.$els.content
             content.innerHTML = component.content
             content.addEventListener("mouseup", component.saveCurrentRange, false)
             content.addEventListener("keyup", component.saveCurrentRange, false)
@@ -158,9 +171,9 @@
             }, false)
 
             component.touchHander = function (e) {
-                var isInside = (component.$els.content.contains(e.target))
-                var currentRange = component.getCurrentRange()
-                var clear = currentRange && (currentRange.startContainer === currentRange.endContainer
+                let isInside = (component.$els.content.contains(e.target))
+                let currentRange = component.getCurrentRange()
+                let clear = currentRange && (currentRange.startContainer === currentRange.endContainer
                         && currentRange.startOffset === currentRange.endOffset);
                 if (!clear || isInside) {
                     component.saveCurrentRange()
@@ -168,18 +181,15 @@
             }
 
             window.addEventListener("touchend", component.touchHander, false)
-        }
-        ,
-        beforeDestroy()
-        {
-            window.removeEventListener("touchend", this.touchHander)
-        }
-        ,
-        components: {
-            "dashboard-color": dashboardColor,
-            "dashboard-image": dashboardImage,
-            "dashboard-link": dashboardLink,
-            "dashboard-table": dashboardTable
+        },
+        beforeDestroy(){
+            let editor = this
+            window.removeEventListener("touchend", editor.touchHander)
+            editor.modules.forEach(function (module) {
+                if (typeof module.destroyed == "function") {
+                    module.destroyed(editor)
+                }
+            })
         }
     }
 </script>
