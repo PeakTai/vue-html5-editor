@@ -156,3 +156,6 @@ Sets z-index style property of editor
 ### auto-height
 
 Resize editor height Automatically
+
+# License
+[Apache-2.0](http://opensource.org/licenses/Apache-2.0)
