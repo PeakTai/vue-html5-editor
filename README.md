@@ -1,120 +1,158 @@
-# vue-html5-editor
+# Intro
 
-一个vue的html5富文本编辑器插件，简洁易用,支持Vue1.0以上版本
+Vue-html5-editor is an html5 wysiwyg editor for vue,easy and flexible,compatible with Vue.js 1.0+.
 
-![编辑器图片](http://tai.coding.me/vue-html5-editor/editor.png)
+![screenshot](http://tai.coding.me/vue-html5-editor/editor.png)
 
-[查看在线演示](http://tai.coding.me/vue-html5-editor)
+[demo is here](http://tai.coding.me/vue-html5-editor)
 
-## 安装并使用
+# Installation
 
-#### nodejs
+### Npm
+
 
 ```bash
 npm install vue-html5-editor --save-dev
 ```
 
+import and install as global component
+
 ```js
+var Vue = require("vue")
 var editor = require("vue-html5-editor")
 Vue.use(editor,options);
 ```
 
-### 浏览器
+### browser
 
 ```html
+<script src="serverpath/vue.js"></script>
 <script src="serverpath/vue-html5-editor.js"></script>
 ```
-引入了js后，会有一个全局变量`VueHtml5Editor`
-
+Install using global variable `VueHtml5Editor`
 ```js
-Vue.use(VueHtml5Editor, { name : "editor"})
+Vue.use(VueHtml5Editor, options)
 ```
-模板示例代码
+
+
+# Usage
+
+template code as follows
 
 ```html
-<editor :content="content" :height="500"></editor>
+<vue-html5-editor :content="content" :height="500"></vue-html5-editor>
 ```
-### 全局安装选项
+
+# options
 
 ```js
 Vue.use(VueHtml5Editor, {
-    //全局组件的名称
-    name: "editor",
-    //图片相关配置
+    //global component name
+    name: "vue-html5-editor",
+    //custom icon class of built-in modules,default using font-awesome
+    icons: {
+        text: "fa fa-pencil",
+        color: "fa fa-paint-brush",
+        font: "fa fa-font",
+        align: "fa fa-align-justify",
+        list: "fa fa-list",
+        link: "fa fa-chain",
+        unlink: "fa fa-chain-broken",
+        tabulation: "fa fa-table",
+        image: "fa fa-file-image-o",
+        eraser: "fa fa-eraser",
+        "full-screen": "fa fa-arrows-alt",
+        info: "fa fa-info",
+    },
+    //config image module
     image: {
-        //服务器上传地址
-        //服务器需要返回json数据类似 {ok:false,msg:"错误信息"} 或者 {ok:true,data:"图片地址"}
+        //Url of the server-side,default null and convert image to base64
+        //return json data like  {ok:false,msg:"unexpected"} or {ok:true,data:"image url"}
         server: null,
-        //图片上传请求参数名称
+        //the name for file field in multipart request
         fieldName: "image",
-        //大小限制,默认512k
+        //max file size
         sizeLimit: 512 * 1024,
-        //是否压缩,如果设置为false,后面3个参数无用
+        // default true,if set to true,the image will resize by localResizeIMG (https://github.com/think2011/localResizeIMG)
         compress: true,
-        //压缩后的最大宽度
+        //follows are options of localResizeIMG
         width: 1600,
-        //压缩后的最大高度
         height: 1600,
-        //jpeg质量
         quality: 80
     },
-    //图标配置,编辑器默认使用fontawesome图标,可自定义图标的class进行配置
-    icons: {
-        //加粗
-        bold: "fa fa-bold",
-        //倾斜
-        italic: "fa fa-italic",
-        //下划线
-        underline: "fa fa-underline",
-        //颜色
-        color: "fa fa-pencil",
-        //链接
-        link: "fa fa-link",
-        //取消链接
-        unlink: "fa fa-chain-broken",
-        //有序列表
-        ol: "fa fa-list-ol",
-        //无序列表
-        ul: "fa fa-list-ul",
-        //水平分隔线
-        hr: "fa fa-minus",
-        //表格
-        table: "fa fa-table",
-        //图片
-        image: "fa fa-file-image-o",
-        //格式清除
-        eraser: "fa fa-eraser",
-        //撤回
-        undo: "fa fa-undo",
-        //全屏
-        fullScreen: "fa fa-arrows-alt"
+    //default en-us, en-us and zh-cn are built-in
+    language: "zh-cn",
+    i18n: {
+        //specify your language here
+        "zh-cn": {
+            "align": "对齐方式",
+            "image": "图片",
+            "list": "列表",
+            "link": "链接",
+            "unlink": "去除链接",
+            "table": "表格",
+            "font": "文字",
+            "full screen": "全屏",
+            "text": "排版",
+            "eraser": "格式清除",
+            "info": "关于",
+            "color": "颜色",
+            "please enter a url": "请输入地址",
+            "create link": "创建链接",
+            "bold": "加粗",
+            "italic": "倾斜",
+            "underline": "下划线",
+            "strike through": "删除线",
+            "subscript": "上标",
+            "superscript": "下标",
+            "heading": "标题",
+            "font name": "字体",
+            "font size": "文字大小",
+            "left justify": "左对齐",
+            "center justify": "居中",
+            "right justify": "右对齐",
+            "ordered list": "有序列表",
+            "unordered list": "无序列表",
+            "fore color": "前景色",
+            "background color": "背景色",
+            "row count": "行数",
+            "column count": "列数",
+            "save": "确定",
+            "upload": "上传",
+            "progress": "进度",
+            "unknown": "未知",
+            "please wait": "请稍等",
+            "error": "错误",
+            "abort": "中断",
+            "reset": "重置"
+        }
+    },
+    //extended modules
+    modules: {
+        //omit,reference to source code of build-in modules
     }
+
 })
 ```
 
-### 编辑器组件属性
+# attributes of component
 
 ```html
-<editor :content.sync="content" :height="500" :z-index="1000" :auto-height="true" :disable-full-screen="false"></editor>
+<editor :content.sync="content" :height="500" :z-index="1000" :auto-height="true"></editor>
 ```
 
-#### content
+### content
 
-编辑内容，需要双向同步，字符串类型
+Content to edit,need  two-way binding
 
-#### height
+### height
 
-编辑器高度，单位像素，数值型
+The height or min-height ( if auto-height is true ) of editor
 
 ### z-index
 
-编辑器的显示层级,默认1000
+Sets z-index style property of editor
 
 ### auto-height
 
-是否自动增高,默认true
-
-### disable-full-screen
-
-是否禁用全屏功能
-
+Resize editor height Automatically
