@@ -84,5 +84,5 @@ exports.install = (Vue, options) => {
         components
     })
 
-    Vue.component(options.name || "html5-editor", component)
+    Vue.component(options.name || "vue-html5-editor", component)
 }
