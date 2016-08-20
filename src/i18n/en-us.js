@@ -38,5 +38,7 @@ export default  {
     "please wait": "please wait",
     "error": "error",
     "abort": "abort",
-    "reset":"reset"
+    "reset": "reset",
+    "hr": "horizontal rule",
+    "undo": "undo"
 }

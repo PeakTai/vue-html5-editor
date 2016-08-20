@@ -38,5 +38,7 @@ export default  {
     "please wait": "请稍等",
     "error": "错误",
     "abort": "中断",
-    "reset": "重置"
+    "reset": "重置",
+    "hr": "分隔线",
+    "undo": "撤消"
 }

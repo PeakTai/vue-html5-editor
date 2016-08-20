@@ -8,7 +8,9 @@ import moduleLink from "./modules/link/index";
 import moduleUnlink from "./modules/unlink/index";
 import moduleTable from "./modules/table/index";
 import moduleImage from "./modules/image/index";
+import moduleHr from "./modules/hr";
 import moduleEraser from "./modules/eraser/index";
+import moduleUndo from "./modules/undo/index";
 import moduleFullScreen from "./modules/full-screen/index";
 import moduleInfo from "./modules/info/index";
 import i18nZhCn from "./i18n/zh-cn";
@@ -34,7 +36,9 @@ exports.install = (Vue, options) => {
         moduleUnlink,
         moduleTable,
         moduleImage,
+        moduleHr,
         moduleEraser,
+        moduleUndo,
         moduleFullScreen,
         moduleInfo
     ]

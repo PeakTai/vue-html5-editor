@@ -100,23 +100,31 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _index18 = _interopRequireDefault(_index17);
 
-	var _index19 = __webpack_require__(110);
+	var _hr = __webpack_require__(110);
+
+	var _hr2 = _interopRequireDefault(_hr);
+
+	var _index19 = __webpack_require__(111);
 
 	var _index20 = _interopRequireDefault(_index19);
 
-	var _index21 = __webpack_require__(111);
+	var _index21 = __webpack_require__(112);
 
 	var _index22 = _interopRequireDefault(_index21);
 
-	var _index23 = __webpack_require__(112);
+	var _index23 = __webpack_require__(113);
 
 	var _index24 = _interopRequireDefault(_index23);
 
-	var _zhCn = __webpack_require__(116);
+	var _index25 = __webpack_require__(114);
+
+	var _index26 = _interopRequireDefault(_index25);
+
+	var _zhCn = __webpack_require__(118);
 
 	var _zhCn2 = _interopRequireDefault(_zhCn);
 
-	var _enUs = __webpack_require__(117);
+	var _enUs = __webpack_require__(119);
 
 	var _enUs2 = _interopRequireDefault(_enUs);
 
@@ -132,7 +140,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    options = options || {};
 
 	    //modules
-	    var modules = [_index2.default, _index6.default, _index4.default, _index8.default, _index10.default, _index12.default, _index14.default, _index16.default, _index18.default, _index20.default, _index22.default, _index24.default];
+	    var modules = [_index2.default, _index6.default, _index4.default, _index8.default, _index10.default, _index12.default, _index14.default, _index16.default, _index18.default, _hr2.default, _index20.default, _index22.default, _index24.default, _index26.default];
 	    //extended modules
 	    if (Array.isArray(options.modules)) {
 	        (function () {
@@ -181,7 +189,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        components: components
 	    });
 
-	    Vue.component(options.name || "html5-editor", component);
+	    Vue.component(options.name || "vue-html5-editor", component);
 	};
 
 /***/ },
@@ -1313,7 +1321,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Created by peak on 16/8/18.
 	 */
 	exports.default = {
-	    name: "dashboard-table",
+	    //can not named table
+	    //dashboard will add to editor as a child component and named as module name
+	    //Do not use built-in or reserved HTML elements as component id
+	    name: "tabulation",
 	    icon: "fa fa-table",
 	    i18n: "table",
 	    show: true,
@@ -3691,6 +3702,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	/**
+	 * hr
+	 * Created by peak on 16/8/20.
+	 */
+	exports.default = {
+	    name: "hr",
+	    icon: "fa-minus fa",
+	    show: true,
+	    i18n: "hr",
+	    handler: function handler(editor) {
+	        editor.execCommand("insertHorizontalRule");
+	    }
+	};
+
+/***/ },
+/* 111 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	/**
 	 * remove format of selection
 	 * Created by peak on 16/8/18.
 	 */
@@ -3705,7 +3739,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 111 */
+/* 112 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	/**
+	 * undo
+	 * Created by peak on 16/8/20.
+	 */
+	exports.default = {
+	    name: "undo",
+	    icon: "icon fa-undo fa",
+	    show: true,
+	    i18n: "undo",
+	    handler: function handler(editor) {
+	        editor.execCommand("undo");
+	    }
+	};
+
+/***/ },
+/* 113 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3728,7 +3785,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 112 */
+/* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3737,7 +3794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
-	var _dashboard = __webpack_require__(113);
+	var _dashboard = __webpack_require__(115);
 
 	var _dashboard2 = _interopRequireDefault(_dashboard);
 
@@ -3764,16 +3821,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    */
 
 /***/ },
-/* 113 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(114)
+	__vue_script__ = __webpack_require__(116)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] src/modules/info/dashboard.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(115)
+	__vue_template__ = __webpack_require__(117)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -3792,7 +3849,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	})()}
 
 /***/ },
-/* 114 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3820,13 +3877,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	// </script>
 
 /***/ },
-/* 115 */
+/* 117 */
 /***/ function(module, exports) {
 
 	module.exports = "\n<h3 style=\"text-align: center\">Vue-html5-editor&nbsp;{{version}}</h3>\n<p style=\"text-align: center\">\n    GitHub:\n    <a href=\"https://github.com/PeakTai/vue-html5-editor\" target=\"_blank\">\n        https://github.com/PeakTai/vue-html5-editor\n    </a>\n</p>\n";
 
 /***/ },
-/* 116 */
+/* 118 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3874,11 +3931,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    "please wait": "请稍等",
 	    "error": "错误",
 	    "abort": "中断",
-	    "reset": "重置"
+	    "reset": "重置",
+	    "hr": "分隔线",
+	    "undo": "撤消"
 	};
 
 /***/ },
-/* 117 */
+/* 119 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -3926,7 +3985,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    "please wait": "please wait",
 	    "error": "error",
 	    "abort": "abort",
-	    "reset": "reset"
+	    "reset": "reset",
+	    "hr": "horizontal rule",
+	    "undo": "undo"
 	};
 
 /***/ }
