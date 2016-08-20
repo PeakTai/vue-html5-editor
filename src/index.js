@@ -76,7 +76,10 @@ exports.install = (Vue, options) => {
 
     //i18n
     let i18n = {"zh-cn": i18nZhCn, "en-us": i18nEnUs}
-    i18n = Vue.util.extend(i18n, options.i18n || {})
+    let customI18n = options.i18n || {}
+    Object.keys(customI18n).forEach((key)=> {
+        i18n[key] = i18n[key] ? Vue.util.extend(i18n[key], customI18n[key]) : customI18n[key]
+    })
     let language = options.language || "en-us"
     let locale = i18n[language] || i18n["en-us"]
 
