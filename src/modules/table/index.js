@@ -4,7 +4,8 @@ import dashboard from "./dashboard.vue";
  * Created by peak on 16/8/18.
  */
 export default {
-    name: "dashboard-table",
+    //can not named table
+    name: "tabulation",
     icon: "fa fa-table",
     i18n: "table",
     show: true,
