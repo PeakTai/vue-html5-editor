@@ -1089,7 +1089,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.default = {
 	    name: "align",
-	    icon: "fa fa-align-justify",
+	    icon: "fa fa-align-center",
 	    i18n: "align",
 	    show: true,
 	    dashboard: _dashboard2.default
@@ -3707,7 +3707,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	exports.default = {
 	    name: "hr",
-	    icon: "fa-minus fa",
+	    icon: "fa fa-minus",
 	    show: true,
 	    i18n: "hr",
 	    handler: function handler(editor) {
@@ -3753,7 +3753,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	exports.default = {
 	    name: "undo",
-	    icon: "icon fa-undo fa",
+	    icon: "fa-undo fa",
 	    show: true,
 	    i18n: "undo",
 	    handler: function handler(editor) {
