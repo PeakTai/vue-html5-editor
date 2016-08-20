@@ -18,8 +18,20 @@
             display: inline-block;
         }
 
-        .custom-icon.blod {
-            background-image: url(custom-icons/blod.gif);
+        .custom-icon.text {
+            background-image: url(custom-icons/text.png);
+        }
+
+        .custom-icon.font {
+            background-image: url(custom-icons/font.png);
+        }
+
+        .custom-icon.align {
+            background-image: url(custom-icons/align.png);
+        }
+
+        .custom-icon.list {
+            background-image: url(custom-icons/list.png);
         }
 
         .custom-icon.color {
@@ -42,28 +54,12 @@
             background-image: url(custom-icons/image.gif);
         }
 
-        .custom-icon.italic {
-            background-image: url(custom-icons/italic.gif);
-        }
-
         .custom-icon.link {
             background-image: url(custom-icons/link.gif);
         }
 
-        .custom-icon.ol {
-            background-image: url(custom-icons/ol.gif);
-        }
-
-        .custom-icon.ul {
-            background-image: url(custom-icons/ul.gif);
-        }
-
         .custom-icon.table {
             background-image: url(custom-icons/table.gif);
-        }
-
-        .custom-icon.underline {
-            background-image: url(custom-icons/underline.gif);
         }
 
         .custom-icon.undo {
@@ -74,31 +70,36 @@
             background-image: url(custom-icons/unlink.gif);
         }
 
+        .custom-icon.info {
+            background-image: url(custom-icons/info.png);
+        }
+
 
     </style>
 </head>
 <body>
 <div id="app">
-    <html5-editor :content.sync="content" :height="500"></html5-editor>
+    <vue-html5-editor :content.sync="content" :height="500"></vue-html5-editor>
 </div>
 <script>
     Vue.use(VueHtml5Editor, {
         image: {compress: false},
         icons: {
-            bold: "custom-icon blod",
-            italic: "custom-icon italic",
-            underline: "custom-icon underline",
+            text: "custom-icon text",
             color: "custom-icon color",
+            font: "custom-icon font",
+            align: "custom-icon align",
+            list: "custom-icon list",
             link: "custom-icon link",
             unlink: "custom-icon unlink",
-            ol: "custom-icon ol",
-            ul: "custom-icon ul",
-            hr: "custom-icon hr",
-            table: "custom-icon table",
+            tabulation: "custom-icon table",
             image: "custom-icon image",
+            "horizontal-rule": "custom-icon hr",
             eraser: "custom-icon eraser",
+            hr: "custom-icon hr",
             undo: "custom-icon undo",
-            fullScreen: "custom-icon full-screen"
+            "full-screen": "custom-icon full-screen",
+            info: "custom-icon info ",
         }
     })
     new Vue({

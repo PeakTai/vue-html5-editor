@@ -17,11 +17,11 @@
 </head>
 <body>
 <div id="app">
-    <html5-editor :content.sync="content" :height="500"></html5-editor>
+    <vue-html5-editor :content.sync="content" :height="500"></vue-html5-editor>
 </div>
 
 <script>
-    Vue.use(VueHtml5Editor, {image: {compress: false}})
+    Vue.use(VueHtml5Editor, {image: {compress: false},language:"zh-cn"})
     new Vue({
         el: "#app",
         data: {
