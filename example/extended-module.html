@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue html5 editor demo</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+    <script src="../dist/vue-html5-editor.js"></script>
+    <script src="http://cdn.bootcss.com/vue/1.0.26/vue.js"></script>
+    <script src="http://cdn.bootcss.com/moment.js/2.14.1/moment.min.js"></script>
+    <link href="http://cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        #app {
+            margin: 50px auto;
+            width: 800px;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <vue-html5-editor :content.sync="content" :height="500"></vue-html5-editor>
+</div>
+
+
+<script type="x/template" id="template-emoji">
+    <button v-for="s in symbols" type="button" @click="insertSymbol(s)">{{s}}</button>
+</script>
+<script>
+
+    Vue.use(VueHtml5Editor, {
+        i18n: {
+            //i18n for custom module
+            "en-us": {
+                date: "insert current time",
+                emoji: "emoji"
+            }
+        },
+        //config custom module
+        date: {
+            format: "YYYY-MM-DD"
+        },
+        modules: [
+            {
+                name: "date",
+                icon: "fa fa-calendar",
+                i18n: "time",
+                show: true,
+                init: function (editor) {
+                    alert("time module init, config is \r\n" + JSON.stringify(this.config))
+                },
+                handler: function (editor) {
+                    editor.execCommand("insertText", moment().format(this.config.format || "YYYY-MM-DD HH:mm"))
+                },
+                destroyed: function (editor) {
+                    alert("time module destroyed")
+                }
+            },
+            {
+                //custom module with dashboard
+                name: "emoji",
+                icon: "fa fa-smile-o",
+                i18n: "emoji",
+                show: true,
+                init: function (editor) {
+                    console.log("emoji module init")
+                },
+                //vue component
+                dashboard: {
+                    template: "#template-emoji",
+                    data: function () {
+                        return {
+                            symbols: [
+                                ">_<|||",
+                                "^_^;",
+                                "⊙﹏⊙‖∣°",
+                                "^_^|||",
+                                "^_^\"",
+                                "→_→",
+                                "..@_@|||||..",
+                                "…(⊙_⊙;)…",
+                                "o_o ....",
+                                "O__O",
+                                "///^_^.......",
+                                "?o?|||",
+                                "( ^_^ )? ",
+                                "(+_+)?",
+                                "（?ε?）? ",
+                                "o_O???",
+                                "@_@a",
+                                "一 一+",
+                                ">\"<||||",
+                                "‘(*>﹏<*)′"
+                            ]
+                        }
+                    },
+                    methods: {
+                        insertSymbol: function (symbol) {
+                            //$parent is editor component instance
+                            this.$parent.execCommand("insertText", symbol)
+                        }
+                    }
+                }
+            }
+        ]
+    })
+    new Vue({
+        el: "#app",
+        data: {
+            content: "<h3>vue html5 editor</h3>",
+        }
+    })
+</script>
+</body>
+</html>
