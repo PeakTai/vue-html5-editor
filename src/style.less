@@ -36,13 +36,13 @@
     background-color: @background-color;
     position: relative;
 
-    ul {
+    & > ul {
       list-style: none;
       padding: 0;
       margin: 0;
       border-bottom: 1px solid @border-color;
 
-      li {
+      & > li {
         display: inline-block;
         cursor: pointer;
         width: 50px;
@@ -120,9 +120,12 @@
         }
       }
 
+      input, button, select {
+        line-height: normal;
+      }
+
       label {
-        margin-bottom: 5px;
-        font-weight: 700;
+        font-weight: bolder;
       }
 
     }
@@ -151,10 +154,13 @@
 @media (max-width: 767px) {
   .vue-html5-editor {
     .dashboard {
-      label, input[type='text'], input[type='number'], button {
+      label, input[type='text'], input[type='number'], button, select {
         display: block;
         margin-bottom: 5px;
         width: 100% !important;
+        &:last-child {
+          margin-bottom: 0;
+        }
       }
     }
   }
@@ -163,7 +169,7 @@
 @media (min-width: 768px) {
   .vue-html5-editor {
     .dashboard {
-      label, input, button {
+      label, input, button, select {
         display: inline-block;
         margin-right: 4px;
         max-width: 100%;

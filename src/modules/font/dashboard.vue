@@ -1,19 +1,26 @@
+<style>
+    .vue-html5-editor .dashboard .dashboard-font {
+        line-height: 36px;
+    }
+</style>
 <template>
-    <div>
-        <label>{{$parent.locale["heading"]}}:</label>
-        <button v-for="h in 6" type="button" @click="setHeading(h+1)">H{{h+1}}</button>
-    </div>
-    <div>
-        <label>
-            {{$parent.locale["font name"]}}:
-        </label>
-        <button v-for="name in nameList" type="button" @click="setFontName(name)">{{name}}</button>
-    </div>
-    <div>
-        <label>
-            {{$parent.locale["font size"]}}:
-        </label>
-        <button v-for="size in 7" type="button" @click="setFontSize(size+1)">{{size+1}}</button>
+    <div class="dashboard-font">
+        <div>
+            <label>{{$parent.locale["heading"]}}:</label>
+            <button v-for="h in 6" type="button" @click="setHeading(h+1)">H{{h+1}}</button>
+        </div>
+        <div>
+            <label>
+                {{$parent.locale["font name"]}}:
+            </label>
+            <button v-for="name in nameList" type="button" @click="setFontName(name)">{{name}}</button>
+        </div>
+        <div>
+            <label>
+                {{$parent.locale["font size"]}}:
+            </label>
+            <button v-for="size in 7" type="button" @click="setFontSize(size+1)">{{size+1}}</button>
+        </div>
     </div>
 </template>
 <script>
