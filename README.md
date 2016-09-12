@@ -1,8 +1,8 @@
 # Intro
 
-Vue-html5-editor is an html5 wysiwyg editor for vue,easy and flexible,compatible with Vue.js 1.0+.
+Vue-html5-editor is an html5 wysiwyg editor for vue,easy and flexible,compatible with Vue.js 1.0+.
 
-![screenshot](http://tai.coding.me/vue-html5-editor/editor.png)
+![screenshot](http://tai.coding.me/vue-html5-editor/editor.png?v=20160912)
 
 [demo is here](http://tai.coding.me/vue-html5-editor)
 
