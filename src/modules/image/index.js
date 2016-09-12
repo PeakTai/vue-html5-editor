@@ -16,7 +16,15 @@ export default {
         compress: true,
         width: 1600,
         height: 1600,
-        quality: 80
+        quality: 80,
+        uploadHandler(responseText){
+            var json = JSON.parse(responseText)
+            if (!json.ok) {
+                alert(json.msg)
+            } else {
+                return json.data
+            }
+        }
     },
     dashboard
 }

@@ -69,7 +69,6 @@ Vue.use(VueHtml5Editor, {
     //config image module
     image: {
         //Url of the server-side,default null and convert image to base64
-        //return json data like  {ok:false,msg:"unexpected"} or {ok:true,data:"image url"}
         server: null,
         //the name for file field in multipart request
         fieldName: "image",
@@ -80,7 +79,17 @@ Vue.use(VueHtml5Editor, {
         //follows are options of localResizeIMG
         width: 1600,
         height: 1600,
-        quality: 80
+        quality: 80,
+        //handle response data，return image url
+        uploadHandler(responseText){
+            //default accept json data like  {ok:false,msg:"unexpected"} or {ok:true,data:"image url"}
+            var json = JSON.parse(responseText)
+            if (!json.ok) {
+                alert(json.msg)
+            } else {
+                return json.data
+            }
+        }
     },
     //default en-us, en-us and zh-cn are built-in
     language: "zh-cn",
@@ -129,11 +138,30 @@ Vue.use(VueHtml5Editor, {
             "reset": "重置"
         }
     },
+    //the modules you don't want
+    hiddenModules: [],
+    //keep only the modules you want and customize the order.
+    //can be used with hiddenModules together
+    visibleModules: [
+        "text",
+        "color",
+        "font",
+        "align",
+        "list",
+        "link",
+        "unlink",
+        "tabulation",
+        "image",
+        "hr",
+        "eraser",
+        "undo",
+        "full-screen",
+        "info",
+    ],
     //extended modules
     modules: {
         //omit,reference to source code of build-in modules
     }
-
 })
 ```
 

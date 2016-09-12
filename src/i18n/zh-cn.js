@@ -40,5 +40,6 @@ export default  {
     "abort": "中断",
     "reset": "重置",
     "hr": "分隔线",
-    "undo": "撤消"
+    "undo": "撤消",
+    "line height": "行高"
 }

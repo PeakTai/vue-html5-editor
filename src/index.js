@@ -15,6 +15,7 @@ import moduleFullScreen from "./modules/full-screen/index";
 import moduleInfo from "./modules/info/index";
 import i18nZhCn from "./i18n/zh-cn";
 import i18nEnUs from "./i18n/en-us";
+import arrayFill from "./array-polyfill";
 
 /**
  * install
@@ -22,6 +23,8 @@ import i18nEnUs from "./i18n/en-us";
  * @param options {Object}
  */
 exports.install = (Vue, options) => {
+
+    arrayFill()
 
     options = options || {}
 
@@ -52,6 +55,33 @@ exports.install = (Vue, options) => {
         })
         modules = modules.concat(arr)
     }
+    //hidden modules
+    if (Array.isArray(options.hiddenModules)) {
+        modules = (()=> {
+            let arr = []
+            modules.forEach(function (m) {
+                if (!options.hiddenModules.includes(m.name)) {
+                    arr.push(m)
+                }
+            })
+            return arr
+        })()
+    }
+    //visible modules
+    if (Array.isArray(options.visibleModules)) {
+        modules = (()=> {
+            let arr = []
+            options.visibleModules.forEach(function (name) {
+                modules.forEach(function (module) {
+                    if (module.name == name) {
+                        arr.push(module)
+                    }
+                })
+            })
+            return arr
+        })()
+    }
+
 
     let components = {}
     modules.forEach((module)=> {

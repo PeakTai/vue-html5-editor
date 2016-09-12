@@ -40,5 +40,6 @@ export default  {
     "abort": "abort",
     "reset": "reset",
     "hr": "horizontal rule",
-    "undo": "undo"
+    "undo": "undo",
+    "line height": "line height"
 }

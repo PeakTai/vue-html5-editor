@@ -1,5 +1,5 @@
 /*!
- * Vue-html5-editor 0.4.2
+ * Vue-html5-editor 0.5.0
  * https://github.com/PeakTai/vue-html5-editor
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -132,6 +132,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _enUs2 = _interopRequireDefault(_enUs);
 
+	var _arrayPolyfill = __webpack_require__(126);
+
+	var _arrayPolyfill2 = _interopRequireDefault(_arrayPolyfill);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	/**
@@ -140,6 +144,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param options {Object}
 	 */
 	exports.install = function (Vue, options) {
+
+	    (0, _arrayPolyfill2.default)();
 
 	    options = options || {};
 
@@ -156,6 +162,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 	            modules = modules.concat(arr);
 	        })();
+	    }
+	    //hidden modules
+	    if (Array.isArray(options.hiddenModules)) {
+	        modules = function () {
+	            var arr = [];
+	            modules.forEach(function (m) {
+	                if (!options.hiddenModules.includes(m.name)) {
+	                    arr.push(m);
+	                }
+	            });
+	            return arr;
+	        }();
+	    }
+	    //visible modules
+	    if (Array.isArray(options.visibleModules)) {
+	        modules = function () {
+	            var arr = [];
+	            options.visibleModules.forEach(function (name) {
+	                modules.forEach(function (module) {
+	                    if (module.name == name) {
+	                        arr.push(module);
+	                    }
+	                });
+	            });
+	            return arr;
+	        }();
 	    }
 
 	    var components = {};
@@ -1053,7 +1085,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = {
 	    props: {
 	        content: {
-	            twoWay: true,
+	            //no longer be required
+	            //twoWay: true,
 	            type: String,
 	            required: true,
 	            default: ""
@@ -1133,6 +1166,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        computeDashboardStyle: function computeDashboardStyle() {
 	            this.dashboardStyle = { 'max-height': this.$els.content.clientHeight + 'px' };
 	        },
+	        getContentElement: function getContentElement() {
+	            return this.$els.content;
+	        },
 	        toggleFullScreen: function toggleFullScreen() {
 	            this.fullScreen = !this.fullScreen;
 	        },
@@ -1146,11 +1182,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.dashboard = null;
 	        },
 	        getCurrentRange: function getCurrentRange() {
-	            var selection = window.getSelection();
-	            return selection.rangeCount ? selection.getRangeAt(0) : null;
+	            return this.range;
 	        },
 	        saveCurrentRange: function saveCurrentRange() {
-	            var range = this.getCurrentRange();
+	            var selection = window.getSelection ? window.getSelection() : document.getSelection();
+	            var range = selection.rangeCount ? selection.getRangeAt(0) : null;
 	            if (!range) {
 	                return;
 	            }
@@ -1159,7 +1195,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        },
 	        restoreSelection: function restoreSelection() {
-	            var selection = window.getSelection();
+	            var selection = window.getSelection ? window.getSelection() : document.getSelection();
 	            selection.removeAllRanges();
 	            if (this.range) {
 	                selection.addRange(this.range);
@@ -1202,20 +1238,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	            component.content = component.$els.content.innerHTML;
 	        }, false);
 
-	        component.touchHander = function (e) {
-	            var isInside = component.$els.content.contains(e.target);
-	            var currentRange = component.getCurrentRange();
-	            var clear = currentRange && currentRange.startContainer === currentRange.endContainer && currentRange.startOffset === currentRange.endOffset;
-	            if (!clear || isInside) {
+	        component.touchHandler = function (e) {
+	            if (component.$els.content.contains(e.target)) {
 	                component.saveCurrentRange();
 	            }
 	        };
 
-	        window.addEventListener("touchend", component.touchHander, false);
+	        window.addEventListener("touchend", component.touchHandler, false);
 	    },
 	    beforeDestroy: function beforeDestroy() {
 	        var editor = this;
-	        window.removeEventListener("touchend", editor.touchHander);
+	        window.removeEventListener("touchend", editor.touchHandler);
 	        editor.modules.forEach(function (module) {
 	            if (typeof module.destroyed == "function") {
 	                module.destroyed(editor);
@@ -1416,13 +1449,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	//             </label>
 	//             <button v-for="size in 7" type="button" @click="setFontSize(size+1)">{{size+1}}</button>
 	//         </div>
+	//         <div>
+	//             <label>
+	//                 {{$parent.locale["line height"]}}:
+	//             </label>
+	//             <button v-for="lh in lineHeightList" type="button" @click="setLineHeight(lh)">
+	//                 {{lh}}
+	//             </button>
+	//         </div>
 	//     </div>
 	// </template>
 	// <script>
 	exports.default = {
 	    data: function data() {
 	        return {
-	            nameList: ["Microsoft YaHei", "Helvetica Neue", "Helvetica", "Arial", "sans-serif", "Verdana", "Georgia", "Times New Roman", "Trebuchet MS", "Microsoft JhengHei", "Courier New", "Impact", "Comic Sans MS", "Consolas"]
+	            nameList: ["Microsoft YaHei", "Helvetica Neue", "Helvetica", "Arial", "sans-serif", "Verdana", "Georgia", "Times New Roman", "Trebuchet MS", "Microsoft JhengHei", "Courier New", "Impact", "Comic Sans MS", "Consolas"],
+	            lineHeightList: ["1.0", "1.5", "1.8", "2.0", "2.5", "3.0"]
 	        };
 	    },
 
@@ -1435,6 +1477,48 @@ return /******/ (function(modules) { // webpackBootstrap
 	        },
 	        setHeading: function setHeading(heading) {
 	            this.$parent.execCommand("formatBlock", "h" + heading);
+	        },
+	        _contains: function _contains(arr, el) {
+	            for (var i = 0; i < arr.length; i++) {
+	                if (arr[i] == el) {
+	                    return true;
+	                }
+	            }
+	            return false;
+	        },
+	        setLineHeight: function setLineHeight(lh) {
+	            var range = this.$parent.getCurrentRange();
+	            if (!range) {
+	                return;
+	            }
+	            if (!range.collapsed) {
+	                range.collapse();
+	            }
+	            //find parent block element
+	            var blockNodeNames = ["DIV", "P", "SECTION", "H1", "H2", "H3", "H4", "H5", "H6", "OL", "UL", "LI", "BODY"];
+	            var container = range.endContainer;
+	            while (container) {
+	                if (container.nodeType != 1) {
+	                    container = container.parentNode;
+	                    continue;
+	                }
+
+	                if (blockNodeNames.includes(container.nodeName)) {
+	                    break;
+	                }
+	                container = container.parentNode;
+	            }
+	            var contentEl = this.$parent.getContentElement();
+	            if (contentEl.contains(container)) {
+	                container.style.lineHeight = lh;
+	            } else {
+	                container = range.endContainer;
+	                var div = document.createElement("div");
+	                div.innerText = container.innerText || container.textContent;
+	                div.style.lineHeight = lh;
+	                container.parentNode.replaceChild(div, container);
+	            }
+	            this.$parent.toggleDashboard("font");
 	        }
 	    }
 	};
@@ -1444,7 +1528,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 51 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div class=\"dashboard-font\">\n    <div>\n        <label>{{$parent.locale[\"heading\"]}}:</label>\n        <button v-for=\"h in 6\" type=\"button\" @click=\"setHeading(h+1)\">H{{h+1}}</button>\n    </div>\n    <div>\n        <label>\n            {{$parent.locale[\"font name\"]}}:\n        </label>\n        <button v-for=\"name in nameList\" type=\"button\" @click=\"setFontName(name)\">{{name}}</button>\n    </div>\n    <div>\n        <label>\n            {{$parent.locale[\"font size\"]}}:\n        </label>\n        <button v-for=\"size in 7\" type=\"button\" @click=\"setFontSize(size+1)\">{{size+1}}</button>\n    </div>\n</div>\n";
+	module.exports = "\n<div class=\"dashboard-font\">\n    <div>\n        <label>{{$parent.locale[\"heading\"]}}:</label>\n        <button v-for=\"h in 6\" type=\"button\" @click=\"setHeading(h+1)\">H{{h+1}}</button>\n    </div>\n    <div>\n        <label>\n            {{$parent.locale[\"font name\"]}}:\n        </label>\n        <button v-for=\"name in nameList\" type=\"button\" @click=\"setFontName(name)\">{{name}}</button>\n    </div>\n    <div>\n        <label>\n            {{$parent.locale[\"font size\"]}}:\n        </label>\n        <button v-for=\"size in 7\" type=\"button\" @click=\"setFontSize(size+1)\">{{size+1}}</button>\n    </div>\n    <div>\n        <label>\n            {{$parent.locale[\"line height\"]}}:\n        </label>\n        <button v-for=\"lh in lineHeightList\" type=\"button\" @click=\"setLineHeight(lh)\">\n            {{lh}}\n        </button>\n    </div>\n</div>\n";
 
 /***/ },
 /* 52 */
@@ -1987,7 +2071,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        compress: true,
 	        width: 1600,
 	        height: 1600,
-	        quality: 80
+	        quality: 80,
+	        uploadHandler: function uploadHandler(responseText) {
+	            var json = JSON.parse(responseText);
+	            if (!json.ok) {
+	                alert(json.msg);
+	            } else {
+	                return json.data;
+	            }
+	        }
 	    },
 	    dashboard: _dashboard2.default
 	};
@@ -2129,13 +2221,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    return;
 	                }
 	                component.upload.status = "success";
-	                var json = JSON.parse(xhr.responseText);
-	                if (!json.ok) {
-	                    alert(json.msg);
-	                } else {
-	                    component.$parent.execCommand("insertImage", json.data);
+	                try {
+	                    var url = config.uploadHandler(xhr.responseText);
+	                    if (url) {
+	                        component.$parent.execCommand("insertImage", url);
+	                    }
+	                } catch (e) {
+	                    console.error(e);
+	                } finally {
+	                    component.upload.status = "ready";
 	                }
-	                component.upload.status = "ready";
 	            };
 	            xhr.onerror = function (e) {
 	                component.upload.status = "error";
@@ -3967,7 +4062,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = {
 	    data: function data() {
 	        return {
-	            version: ("0.4.2")
+	            version: ("0.5.0")
 	        };
 	    }
 	};
@@ -4030,7 +4125,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    "abort": "中断",
 	    "reset": "重置",
 	    "hr": "分隔线",
-	    "undo": "撤消"
+	    "undo": "撤消",
+	    "line height": "行高"
 	};
 
 /***/ },
@@ -4084,7 +4180,55 @@ return /******/ (function(modules) { // webpackBootstrap
 	    "abort": "abort",
 	    "reset": "reset",
 	    "hr": "horizontal rule",
-	    "undo": "undo"
+	    "undo": "undo",
+	    "line height": "line height"
+	};
+
+/***/ },
+/* 126 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	exports.default = function () {
+	    if (!Array.prototype.includes) {
+	        Array.prototype.includes = function (searchElement /*, fromIndex*/) {
+	            'use strict';
+
+	            if (this == null) {
+	                throw new TypeError('Array.prototype.includes called on null or undefined');
+	            }
+
+	            var O = Object(this);
+	            var len = parseInt(O.length, 10) || 0;
+	            if (len === 0) {
+	                return false;
+	            }
+	            var n = parseInt(arguments[1], 10) || 0;
+	            var k;
+	            if (n >= 0) {
+	                k = n;
+	            } else {
+	                k = len + n;
+	                if (k < 0) {
+	                    k = 0;
+	                }
+	            }
+	            var currentElement;
+	            while (k < len) {
+	                currentElement = O[k];
+	                if (searchElement === currentElement || searchElement !== searchElement && currentElement !== currentElement) {
+	                    return true;
+	                }
+	                k++;
+	            }
+	            return false;
+	        };
+	    }
 	};
 
 /***/ }

@@ -120,13 +120,18 @@
                         return
                     }
                     component.upload.status = "success"
-                    var json = JSON.parse(xhr.responseText)
-                    if (!json.ok) {
-                        alert(json.msg)
-                    } else {
-                        component.$parent.execCommand("insertImage", json.data)
+                    try {
+                        let url = config.uploadHandler(xhr.responseText)
+                        if (url) {
+                            component.$parent.execCommand("insertImage", url)
+                        }
+                    } catch (e) {
+                        console.error(e)
+                    } finally {
+                        component.upload.status = "ready"
                     }
-                    component.upload.status = "ready"
+
+
                 }
                 xhr.onerror = function (e) {
                     component.upload.status = "error"

@@ -21,6 +21,14 @@
             </label>
             <button v-for="size in 7" type="button" @click="setFontSize(size+1)">{{size+1}}</button>
         </div>
+        <div>
+            <label>
+                {{$parent.locale["line height"]}}:
+            </label>
+            <button v-for="lh in lineHeightList" type="button" @click="setLineHeight(lh)">
+                {{lh}}
+            </button>
+        </div>
     </div>
 </template>
 <script>
@@ -42,6 +50,9 @@
                     "Impact",
                     "Comic Sans MS",
                     "Consolas"
+                ],
+                lineHeightList: [
+                    "1.0", "1.5", "1.8", "2.0", "2.5", "3.0"
                 ]
             }
         },
@@ -54,6 +65,48 @@
             },
             setHeading(heading){
                 this.$parent.execCommand("formatBlock", "h" + heading)
+            },
+            _contains(arr, el){
+                for (var i = 0; i < arr.length; i++) {
+                    if (arr[i] == el) {
+                        return true
+                    }
+                }
+                return false
+            },
+            setLineHeight(lh){
+                let range = this.$parent.getCurrentRange()
+                if (!range) {
+                    return
+                }
+                if (!range.collapsed) {
+                    range.collapse()
+                }
+                //find parent block element
+                let blockNodeNames = ["DIV", "P", "SECTION", "H1", "H2", "H3", "H4", "H5", "H6", "OL", "UL", "LI", "BODY"]
+                let container = range.endContainer
+                while (container) {
+                    if (container.nodeType != 1) {
+                        container = container.parentNode
+                        continue
+                    }
+
+                    if (blockNodeNames.includes(container.nodeName)) {
+                        break
+                    }
+                    container = container.parentNode
+                }
+                let contentEl = this.$parent.getContentElement()
+                if (contentEl.contains(container)) {
+                    container.style.lineHeight = lh
+                } else {
+                    container = range.endContainer
+                    let div = document.createElement("div")
+                    div.innerText = container.innerText || container.textContent
+                    div.style.lineHeight = lh
+                    container.parentNode.replaceChild(div, container)
+                }
+                this.$parent.toggleDashboard("font")
             }
         }
     }

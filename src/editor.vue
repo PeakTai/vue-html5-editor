@@ -21,7 +21,8 @@
     export default {
         props: {
             content: {
-                twoWay: true,
+                //no longer be required
+                //twoWay: true,
                 type: String,
                 required: true,
                 default: ""
@@ -100,6 +101,9 @@
             computeDashboardStyle(){
                 this.dashboardStyle = {'max-height': this.$els.content.clientHeight + 'px'}
             },
+            getContentElement(){
+                return this.$els.content
+            },
             toggleFullScreen(){
                 this.fullScreen = !this.fullScreen
             },
@@ -113,11 +117,11 @@
                 this.dashboard = null
             },
             getCurrentRange(){
-                let selection = window.getSelection()
-                return selection.rangeCount ? selection.getRangeAt(0) : null
+                return this.range
             },
             saveCurrentRange(){
-                let range = this.getCurrentRange()
+                let selection = window.getSelection ? window.getSelection() : document.getSelection()
+                let range = selection.rangeCount ? selection.getRangeAt(0) : null
                 if (!range) {
                     return
                 }
@@ -127,7 +131,7 @@
                 }
             },
             restoreSelection(){
-                let selection = window.getSelection()
+                let selection = window.getSelection ? window.getSelection() : document.getSelection()
                 selection.removeAllRanges()
                 if (this.range) {
                     selection.addRange(this.range)
@@ -170,21 +174,17 @@
                 component.content = component.$els.content.innerHTML
             }, false)
 
-            component.touchHander = function (e) {
-                let isInside = (component.$els.content.contains(e.target))
-                let currentRange = component.getCurrentRange()
-                let clear = currentRange && (currentRange.startContainer === currentRange.endContainer
-                        && currentRange.startOffset === currentRange.endOffset);
-                if (!clear || isInside) {
+            component.touchHandler = function (e) {
+                if (component.$els.content.contains(e.target)) {
                     component.saveCurrentRange()
                 }
             }
 
-            window.addEventListener("touchend", component.touchHander, false)
+            window.addEventListener("touchend", component.touchHandler, false)
         },
         beforeDestroy(){
             let editor = this
-            window.removeEventListener("touchend", editor.touchHander)
+            window.removeEventListener("touchend", editor.touchHandler)
             editor.modules.forEach(function (module) {
                 if (typeof module.destroyed == "function") {
                     module.destroyed(editor)
