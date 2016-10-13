@@ -93,7 +93,7 @@ exports.install = (Vue, options) => {
         if (module.dashboard) {
             //$options.module
             module.dashboard.module = module
-            components[module.name] = module.dashboard
+            components['dashboard-' + module.name] = module.dashboard
         }
         if (options.icons && options.icons[module.name]) {
             module.icon = options.icons[module.name]

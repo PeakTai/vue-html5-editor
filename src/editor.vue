@@ -151,7 +151,7 @@
                     return
                 }
                 if (module.hasDashboard) {
-                    this.toggleDashboard(module.name)
+                    this.toggleDashboard('dashboard-' + module.name)
                 }
             }
         },
