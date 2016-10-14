@@ -3,10 +3,12 @@
     <div class="vue-html5-editor" :style="{'z-index':zIndex}" :class="{'full-screen':fullScreen}">
         <div class="toolbar" :style="{'z-index':zIndex+1}" v-el:toolbar>
             <ul>
-                <li v-for="module in modules" v-if="module.show" :title="locale[module.i18n]"
-                    @click="activeModule(module)">
-                    <span class="icon" :class="module.icon"></span>
-                </li>
+                <template v-for="module in modules">
+                    <li v-if="module.show" :title="locale[module.i18n]"
+                        @click="activeModule(module)">
+                        <span class="icon" :class="module.icon"></span>
+                    </li>
+                </template>
             </ul>
             <div class="dashboard" v-show="dashboard" :style="dashboardStyle">
                 <div v-if="dashboard" :is="dashboard" keep-alive></div>
