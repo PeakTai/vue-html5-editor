@@ -33,7 +33,7 @@
                 type: Number,
                 default: 300,
                 validator (val) {
-                    return val >= 300
+                    return val >= 100
                 }
             },
             zIndex: {
