@@ -1,5 +1,5 @@
 /*!
- * Vue-html5-editor 0.5.0
+ * Vue-html5-editor 0.5.1
  * https://github.com/PeakTai/vue-html5-editor
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -200,7 +200,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (module.dashboard) {
 	            //$options.module
 	            module.dashboard.module = module;
-	            components[module.name] = module.dashboard;
+	            components['dashboard-' + module.name] = module.dashboard;
 	        }
 	        if (options.icons && options.icons[module.name]) {
 	            module.icon = options.icons[module.name];
@@ -1067,10 +1067,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	//     <div class="vue-html5-editor" :style="{'z-index':zIndex}" :class="{'full-screen':fullScreen}">
 	//         <div class="toolbar" :style="{'z-index':zIndex+1}" v-el:toolbar>
 	//             <ul>
-	//                 <li v-for="module in modules" v-if="module.show" :title="locale[module.i18n]"
-	//                     @click="activeModule(module)">
-	//                     <span class="icon" :class="module.icon"></span>
-	//                 </li>
+	//                 <template v-for="module in modules">
+	//                     <li v-if="module.show" :title="locale[module.i18n]"
+	//                         @click="activeModule(module)">
+	//                         <span class="icon" :class="module.icon"></span>
+	//                     </li>
+	//                 </template>
 	//             </ul>
 	//             <div class="dashboard" v-show="dashboard" :style="dashboardStyle">
 	//                 <div v-if="dashboard" :is="dashboard" keep-alive></div>
@@ -1215,7 +1217,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return;
 	            }
 	            if (module.hasDashboard) {
-	                this.toggleDashboard(module.name);
+	                this.toggleDashboard('dashboard-' + module.name);
 	            }
 	        }
 	    },
@@ -1262,7 +1264,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 42 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div class=\"vue-html5-editor\" :style=\"{'z-index':zIndex}\" :class=\"{'full-screen':fullScreen}\">\n    <div class=\"toolbar\" :style=\"{'z-index':zIndex+1}\" v-el:toolbar>\n        <ul>\n            <li v-for=\"module in modules\" v-if=\"module.show\" :title=\"locale[module.i18n]\"\n                @click=\"activeModule(module)\">\n                <span class=\"icon\" :class=\"module.icon\"></span>\n            </li>\n        </ul>\n        <div class=\"dashboard\" v-show=\"dashboard\" :style=\"dashboardStyle\">\n            <div v-if=\"dashboard\" :is=\"dashboard\" keep-alive></div>\n        </div>\n    </div>\n    <div class=\"content\" v-el:content contenteditable=\"true\" @click=\"toggleDashboard(dashboard)\"\n         :style=\"contentStyle\">\n    </div>\n</div>\n";
+	module.exports = "\n<div class=\"vue-html5-editor\" :style=\"{'z-index':zIndex}\" :class=\"{'full-screen':fullScreen}\">\n    <div class=\"toolbar\" :style=\"{'z-index':zIndex+1}\" v-el:toolbar>\n        <ul>\n            <template v-for=\"module in modules\">\n                <li v-if=\"module.show\" :title=\"locale[module.i18n]\"\n                    @click=\"activeModule(module)\">\n                    <span class=\"icon\" :class=\"module.icon\"></span>\n                </li>\n            </template>\n        </ul>\n        <div class=\"dashboard\" v-show=\"dashboard\" :style=\"dashboardStyle\">\n            <div v-if=\"dashboard\" :is=\"dashboard\" keep-alive></div>\n        </div>\n    </div>\n    <div class=\"content\" v-el:content contenteditable=\"true\" @click=\"toggleDashboard(dashboard)\"\n         :style=\"contentStyle\">\n    </div>\n</div>\n";
 
 /***/ },
 /* 43 */
@@ -2162,7 +2164,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var file = this.$els.file.files[0];
 	            if (file.size > config.size_limit) {
-	                alert("文件过大");
+	                var prompt = component.$parent.locale["exceed size limit"];
+	                alert(prompt);
 	                return;
 	            }
 	            component.$els.file.value = null;
@@ -4062,7 +4065,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = {
 	    data: function data() {
 	        return {
-	            version: ("0.5.0")
+	            version: ("0.5.1")
 	        };
 	    }
 	};
@@ -4126,7 +4129,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    "reset": "重置",
 	    "hr": "分隔线",
 	    "undo": "撤消",
-	    "line height": "行高"
+	    "line height": "行高",
+	    "exceed size limit": "超出大小限制"
 	};
 
 /***/ },
@@ -4181,7 +4185,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    "reset": "reset",
 	    "hr": "horizontal rule",
 	    "undo": "undo",
-	    "line height": "line height"
+	    "line height": "line height",
+	    "exceed size limit": "exceed size limit"
 	};
 
 /***/ },
