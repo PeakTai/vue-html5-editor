@@ -62,7 +62,8 @@
 
                 let file = this.$els.file.files[0]
                 if (file.size > config.size_limit) {
-                    alert("文件过大")
+                    let prompt = component.$parent.locale["exceed size limit"]
+                    alert(prompt)
                     return
                 }
                 component.$els.file.value = null
