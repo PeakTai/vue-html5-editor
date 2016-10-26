@@ -28,7 +28,7 @@
 
 <script>
 
-    import lrz from './lrz.all.bundle'
+    import lrz from 'lrz'
     export default {
         data() {
             return {
