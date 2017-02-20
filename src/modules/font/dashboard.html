@@ -1,0 +1,26 @@
+<div class="dashboard-font" style="line-height: 36px;">
+    <div>
+        <label>{{$parent.locale["heading"]}}:</label>
+        <button v-for="h in 6" type="button" @click="setHeading(h+1)">H{{h+1}}</button>
+    </div>
+    <div>
+        <label>
+            {{$parent.locale["font name"]}}:
+        </label>
+        <button v-for="name in nameList" type="button" @click="setFontName(name)">{{name}}</button>
+    </div>
+    <div>
+        <label>
+            {{$parent.locale["font size"]}}:
+        </label>
+        <button v-for="size in fontSizeList" type="button" @click="setFontSize(size)">{{size}}</button>
+    </div>
+    <div>
+        <label>
+            {{$parent.locale["line height"]}}:
+        </label>
+        <button v-for="lh in lineHeightList" type="button" @click="setLineHeight(lh)">
+            {{lh}}
+        </button>
+    </div>
+</div>

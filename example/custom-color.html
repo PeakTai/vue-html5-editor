@@ -8,16 +8,26 @@
     <script src="//cdn.bootcss.com/vue/2.1.10/vue.js"></script>
     <link href="http://cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     <style>
+        body {
+            background-color: darkseagreen;
+        }
+
         #app {
             margin: 50px auto;
             width: 800px;
             max-width: 100%;
         }
+
+        /*just set the color and background color of .vue-html5-editor*/
+        .vue-html5-editor {
+            color: chocolate;
+            background-color: darkseagreen;
+        }
     </style>
 </head>
 <body>
 <div id="app">
-    <vue-html5-editor :content="content" :height="500" @change="updateData"></vue-html5-editor>
+    <vue-html5-editor :content="content" :height="500"></vue-html5-editor>
 </div>
 
 <script>
@@ -26,11 +36,6 @@
         el: "#app",
         data: {
             content: "<h3>vue html5 editor</h3>",
-        },
-        methods:{
-            updateData(data){
-                console.log('the content changed')
-            }
         }
     })
 </script>

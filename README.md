@@ -1,12 +1,14 @@
-# Intro
+# 简介 Intro 
 
-Vue-html5-editor is an html5 wysiwyg editor for vue,easy and flexible,compatible with Vue.js 1.0+.
+Vue-html5-editor是一个Vue的富文本编辑器插件，简洁灵活可扩展，适用于vue2.0以上版本，支持IE11.
+
+Vue-html5-editor is an html5 wysiwyg editor for vue,easy and flexible,compatible with Vue.js 2.0+,support IE11.
 
 ![screenshot](http://tai.coding.me/vue-html5-editor/editor.png?v=20160912)
 
-[demo is here](http://tai.coding.me/vue-html5-editor)
+[点击查看演示效果 Demo is here](http://tai.coding.me/vue-html5-editor)
 
-# Installation
+# 安装 Installation
 
 ### Npm
 
@@ -15,29 +17,51 @@ Vue-html5-editor is an html5 wysiwyg editor for vue,easy and flexible,compatible
 npm install vue-html5-editor --save-dev
 ```
 
+引入并安装作为全局组件
+
 import and install as global component
 
 ```js
-var Vue = require("vue")
-var editor = require("vue-html5-editor")
-Vue.use(editor,options);
+import Vue from 'vue'
+import VueHtml5Editor from 'vue-html5-editor'
+Vue.use(VueHtml5Editor,options);
 ```
 
-### browser
+同样你也可以作为局部组件使用，方便在不同的场景里使用不同的配置.
+
+```js
+const editor1 = new VueHtml5Editor(options1)
+const app1 = new Vue({
+    components:{editor1
+    }
+})
+const editor2 = new VueHtml5Editor(options2)
+const app2 = new Vue({
+    components:{editor2
+    }
+})
+```
+
+
+### 浏览器直接使用 browser
 
 ```html
 <script src="serverpath/vue.js"></script>
 <script src="serverpath/vue-html5-editor.js"></script>
 ```
-Install using global variable `VueHtml5Editor`
+通过全局变量`VueHtml5Editor`来安装.
+
+Install using global variable `VueHtml5Editor`.
 ```js
 Vue.use(VueHtml5Editor, options)
 ```
 
 
-# Usage
+# 使用说明 Usage
 
-template code as follows
+模板代码如下：
+
+template code as follows:
 
 ```html
 <vue-html5-editor :content="content" :height="500"></vue-html5-editor>
@@ -47,9 +71,11 @@ template code as follows
 
 ```js
 Vue.use(VueHtml5Editor, {
-    //global component name
+    // 全局组件名称，使用new VueHtml5Editor(options)时该选项无效 
+    // global component name
     name: "vue-html5-editor",
-    //custom icon class of built-in modules,default using font-awesome
+    // 自定义各个图标的class，默认使用的是font-awesome提供的图标
+    // custom icon class of built-in modules,default using font-awesome
     icons: {
         text: "fa fa-pencil",
         color: "fa fa-paint-brush",
@@ -66,21 +92,27 @@ Vue.use(VueHtml5Editor, {
         "full-screen": "fa fa-arrows-alt",
         info: "fa fa-info",
     },
-    //config image module
+    // 配置图片模块
+    // config image module
     image: {
-        //Url of the server-side,default null and convert image to base64
+        // 后端图片上传的地址，如果为空，默认转图片为base64
+        // Url of the server-side,default null and convert image to base64
         server: null,
-        //the name for file field in multipart request
+        // 请求时表单参数名
+        // the name for file field in multipart request
         fieldName: "image",
-        //max file size
+        // 文件最大体积，单位字节  max file size
         sizeLimit: 512 * 1024,
+        // 是否压缩，默认true，设置为true时会使用localResizeIMG进行压缩
         // default true,if set to true,the image will resize by localResizeIMG (https://github.com/think2011/localResizeIMG)
         compress: true,
-        //follows are options of localResizeIMG
+        // 图片压缩选项
+        // follows are options of localResizeIMG
         width: 1600,
         height: 1600,
         quality: 80,
-        //handle response data，return image url
+        // 响应数据处理
+        // handle response data，return image url
         uploadHandler(responseText){
             //default accept json data like  {ok:false,msg:"unexpected"} or {ok:true,data:"image url"}
             var json = JSON.parse(responseText)
@@ -91,8 +123,10 @@ Vue.use(VueHtml5Editor, {
             }
         }
     },
+    // 语言，内建的有英文（en-us）和中文（zh-cn）
     //default en-us, en-us and zh-cn are built-in
     language: "zh-cn",
+    // 自定义语言
     i18n: {
         //specify your language here
         "zh-cn": {
@@ -138,10 +172,12 @@ Vue.use(VueHtml5Editor, {
             "reset": "重置"
         }
     },
-    //the modules you don't want
+    // 隐藏不想要显示出来的模块
+    // the modules you don't want
     hiddenModules: [],
-    //keep only the modules you want and customize the order.
-    //can be used with hiddenModules together
+    // 自定义要显示的模块，并控制顺序
+    // keep only the modules you want and customize the order.
+    // can be used with hiddenModules together
     visibleModules: [
         "text",
         "color",
@@ -158,14 +194,15 @@ Vue.use(VueHtml5Editor, {
         "full-screen",
         "info",
     ],
-    //extended modules
+    // 扩展模块，具体可以参考examples或查看源码
+    // extended modules
     modules: {
         //omit,reference to source code of build-in modules
     }
 })
 ```
 
-# attributes of component
+# 组件属性 attributes of component
 
 ```html
 <editor :content.sync="content" :height="500" :z-index="1000" :auto-height="true"></editor>
@@ -173,17 +210,25 @@ Vue.use(VueHtml5Editor, {
 
 ### content
 
-Content to edit,need  two-way binding
+编辑内容
+
+The html content to edit
 
 ### height
 
-The height or min-height ( if auto-height is true ) of editor
+编辑器高度，如果设置了`auto-height`为true，将设置为编辑器的最小高度.
+
+The height or min-height ( if auto-height is true ) of editor.
 
 ### z-index
+
+层级，将会设置编辑器容量的`z-index`样式属性.
 
 Sets z-index style property of editor
 
 ### auto-height
+
+是否自动根据内容控制编辑器高度.
 
 Resize editor height Automatically
 

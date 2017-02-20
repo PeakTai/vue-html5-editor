@@ -1,0 +1,74 @@
+{
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+    },
+    "sourceType": "module"
+  },
+  "globals": {
+    "VERSION": false
+  },
+  "plugins": [
+    "import"
+  ],
+  "rules": {
+    "indent": "off",
+    "semi": [
+      "error",
+      "never"
+    ],
+    "comma-dangle": [
+      "error",
+      "never"
+    ],
+    "comma-spacing": "off",
+    "import/no-extraneous-dependencies": "off",
+    "no-param-reassign": [
+      "error",
+      {
+        "props": false
+      }
+    ],
+    "no-plusplus": "off",
+    "eol-last": "off",
+    "class-methods-use-this": "off",
+    "object-curly-spacing": "off",
+    "new-cap": [
+      "error",
+      {
+        "newIsCap": true,
+        "capIsNew": false,
+        "properties": true
+      }
+    ],
+    "space-before-blocks": "off",
+    "radix": [
+      "error",
+      "as-needed"
+    ],
+    "import/no-unresolved": "off",
+    "import/extensions": [
+      "error",
+      {
+        "js": "never",
+        "json": "always"
+      }
+    ],
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "warn",
+          "error"
+        ]
+      }
+    ]
+  },
+  "extends": "eslint-config-airbnb"
+}

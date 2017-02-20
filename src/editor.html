@@ -1,0 +1,19 @@
+<div class="vue-html5-editor" :class="{'full-screen':fullScreen}" :style="{'z-index':zIndex}">
+    <div class="toolbar" :style="{'z-index':zIndex+1}" ref="toolbar">
+        <ul>
+            <template v-for="module in modules">
+                <li v-if="module.show" :title="locale[module.i18n]" @click="activeModule(module)">
+                    <span class="icon" :class="module.icon"></span>
+                </li>
+            </template>
+        </ul>
+        <div class="dashboard" v-show="dashboard" :style="dashboardStyle">
+            <keep-alive>
+                <div v-if="dashboard" :is="dashboard"></div>
+            </keep-alive>
+        </div>
+    </div>
+    <div class="content" ref="content" :style="contentStyle"
+         contenteditable @click="toggleDashboard(dashboard)">
+    </div>
+</div>
