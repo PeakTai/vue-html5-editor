@@ -1078,7 +1078,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	// <style lang="less" src="./style.less"></style>
 	// <template>
-	//     <ololo></ololo>
 	//     <div class="vue-html5-editor" :style="{'z-index':zIndex}" :class="{'full-screen':fullScreen}">
 	//         <div class="toolbar" :style="{'z-index':zIndex+1}" v-el:toolbar>
 	//             <ul>
@@ -1280,7 +1279,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 42 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n<ololo></ololo>\n<div class=\"vue-html5-editor\" :style=\"{'z-index':zIndex}\" :class=\"{'full-screen':fullScreen}\">\n    <div class=\"toolbar\" :style=\"{'z-index':zIndex+1}\" v-el:toolbar>\n        <ul>\n            <template v-for=\"module in modules\">\n                <li v-if=\"module.show\" :title=\"locale[module.i18n]\"\n                    @click=\"activeModule(module)\">\n                    <!-- <span class=\"icon\" :class=\"module.icon\"></span> -->\n                    <icon-component :value=\"module.icon\"></icon-component>\n                </li>\n            </template>\n        </ul>\n        <div class=\"dashboard\" v-show=\"dashboard\" :style=\"dashboardStyle\">\n            <div v-if=\"dashboard\" :is=\"dashboard\" keep-alive></div>\n        </div>\n    </div>\n    <div class=\"content\" v-el:content contenteditable=\"true\" @click=\"toggleDashboard(dashboard)\"\n         :style=\"contentStyle\">\n    </div>\n</div>\n";
+	module.exports = "\n\n<div class=\"vue-html5-editor\" :style=\"{'z-index':zIndex}\" :class=\"{'full-screen':fullScreen}\">\n    <div class=\"toolbar\" :style=\"{'z-index':zIndex+1}\" v-el:toolbar>\n        <ul>\n            <template v-for=\"module in modules\">\n                <li v-if=\"module.show\" :title=\"locale[module.i18n]\"\n                    @click=\"activeModule(module)\">\n                    <!-- <span class=\"icon\" :class=\"module.icon\"></span> -->\n                    <icon-component :value=\"module.icon\"></icon-component>\n                </li>\n            </template>\n        </ul>\n        <div class=\"dashboard\" v-show=\"dashboard\" :style=\"dashboardStyle\">\n            <div v-if=\"dashboard\" :is=\"dashboard\" keep-alive></div>\n        </div>\n    </div>\n    <div class=\"content\" v-el:content contenteditable=\"true\" @click=\"toggleDashboard(dashboard)\"\n         :style=\"contentStyle\">\n    </div>\n</div>\n";
 
 /***/ },
 /* 43 */
