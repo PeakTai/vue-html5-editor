@@ -83,7 +83,18 @@ exports.install = (Vue, options) => {
     }
 
 
-    let components = {}
+    let components = {
+      IconComponent: {
+        props: {
+          value: {
+            type: String,
+            required: false,
+            default: ''
+          }
+        },
+        template: options.iconTemplate || '<span class="icon {{value}}"></span>'
+      }
+    }
     modules.forEach((module)=> {
 
         //specify the config for each module in options by name

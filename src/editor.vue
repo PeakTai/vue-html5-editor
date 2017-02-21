@@ -1,12 +1,14 @@
 <style lang="less" src="./style.less"></style>
 <template>
+    <ololo></ololo>
     <div class="vue-html5-editor" :style="{'z-index':zIndex}" :class="{'full-screen':fullScreen}">
         <div class="toolbar" :style="{'z-index':zIndex+1}" v-el:toolbar>
             <ul>
                 <template v-for="module in modules">
                     <li v-if="module.show" :title="locale[module.i18n]"
                         @click="activeModule(module)">
-                        <span class="icon" :class="module.icon"></span>
+                        <!-- <span class="icon" :class="module.icon"></span> -->
+                        <icon-component :value="module.icon"></icon-component>
                     </li>
                 </template>
             </ul>
