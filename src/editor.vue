@@ -1,6 +1,5 @@
 <style lang="less" src="./style.less"></style>
 <template>
-    <ololo></ololo>
     <div class="vue-html5-editor" :style="{'z-index':zIndex}" :class="{'full-screen':fullScreen}">
         <div class="toolbar" :style="{'z-index':zIndex+1}" v-el:toolbar>
             <ul>
