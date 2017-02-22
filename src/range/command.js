@@ -25,5 +25,5 @@ export default {
     SUBSCRIPT: 'subscript',
     SUPERSCRIPT: 'superscript',
     UNDO: 'undo',
-    UNLINK: 'unlink',
+    UNLINK: 'unlink'
 }

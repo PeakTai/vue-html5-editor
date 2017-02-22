@@ -8,9 +8,7 @@ import clean from 'postcss-clean'
 import atImport from 'postcss-import'
 import nodeResolve from 'rollup-plugin-node-resolve'
 import replace from 'rollup-plugin-replace'
-import fs from 'fs'
-
-const pkg = JSON.parse(fs.readFileSync(__dirname + '/package.json', {encoding: 'utf8', flag: 'r'}))
+var pkg = require('./package.json')
 
 /**
  * Created by peak on 2017/1/6.

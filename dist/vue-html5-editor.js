@@ -980,12 +980,6 @@ RangeHandler.prototype.execCommand = function execCommand (command, arg) {
             break
         }
         case Command.BOLD: {
-            console.warn('文本结点获取测试');
-            console.warn(this.range);
-            var textNodes$2 = this.getAllTextNodesInRange();
-            window.textNodes = textNodes$2;
-            console.warn(textNodes$2);
-            // todo
             document.execCommand(Command.BOLD, false, arg);
             break
         }
