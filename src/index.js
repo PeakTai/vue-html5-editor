@@ -2,32 +2,7 @@ import buildInModules from './modules/index'
 import editor from './editor'
 import i18nZhCn from './i18n/zh-cn'
 import i18nEnUs from './i18n/en-us'
-
-/**
- * shadow clone
- *
- * @param source    source object
- * @param ext       extended object
- */
-const mixin = (source = {}, ext = {}) => {
-    Object.keys(ext).forEach((k) => {
-        // for data function
-        if (k === 'data') {
-            const dataSrc = source[k]
-            const dataDesc = ext[k]
-            if (typeof dataDesc === 'function') {
-                if (typeof dataSrc !== 'function') {
-                    source[k] = dataDesc
-                } else {
-                    source[k] = () => mixin(dataSrc(), dataDesc())
-                }
-            }
-        } else {
-            source[k] = ext[k]
-        }
-    })
-    return source
-}
+import mixin from './util/mixin'
 
 /**
  * Vue html5 Editor

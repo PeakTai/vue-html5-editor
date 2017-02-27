@@ -1,23 +1,32 @@
 <div>
-    <form @submit="insertImage" v-if="upload.status=='ready'">
-        <input type="text" v-model="url" maxlength="255" :placeholder="$parent.locale['please enter a url']">
-        <button type="submit">{{$parent.locale.save}}</button>
-        <button type="button" @click="pick">{{$parent.locale.upload}}</button>
-        <input type="file" v-el:file style="display: none !important;" @change="selectFile"
+
+    <div v-show="upload.status=='ready'">
+
+        <input type="text" v-model="imageUrl" maxlength="255" :placeholder="$parent.locale['please enter a url']">
+        <button type="button" @click="insertImageUrl">{{$parent.locale.save}}</button>
+
+        <input type="file" ref="file" style="display: none !important;" @change="startUpload"
                accept="image/png,image/jpeg,image/gif,image/jpg">
-    </form>
+        <button type="button" @click="pick">{{$parent.locale.upload}}</button>
+    </div>
+
     <div v-if="upload.status=='progress'">
         {{$parent.locale.progress}}:{{progressComputable ? $parent.locale.unknown : upload.complete}}
     </div>
+
     <div v-if="upload.status=='success'">
         {{$parent.locale["please wait"]}}...
     </div>
+
     <div v-if="upload.status=='error'">
-        {{$parent.locale.upload}}&nbsp;{{$parent.locale.error}},
+        {{$parent.locale.error}}:{{errorMsg}}
         <button type="button" @click="reset">{{$parent.locale.reset}}</button>
     </div>
+
     <div v-if="upload.status=='abort'">
         {{$parent.locale.upload}}&nbsp;{{$parent.locale.abort}},
         <button type="button" @click="reset">{{$parent.locale.reset}}</button>
     </div>
+
 </div>
+

@@ -202,10 +202,10 @@ Vue.use(VueHtml5Editor, {
 })
 ```
 
-# 组件属性 attributes of component
+# 组件属性 attributes
 
 ```html
-<editor :content.sync="content" :height="500" :z-index="1000" :auto-height="true"></editor>
+<editor :content="content" :height="500" :z-index="1000" :auto-height="true"></editor>
 ```
 
 ### content
@@ -222,15 +222,26 @@ The height or min-height ( if auto-height is true ) of editor.
 
 ### z-index
 
-层级，将会设置编辑器容量的`z-index`样式属性.
+层级，将会设置编辑器容量的`z-index`样式属性,默认为1000.
 
-Sets z-index style property of editor
+Sets z-index style property of editor,default 1000.
 
 ### auto-height
 
-是否自动根据内容控制编辑器高度.
+是否自动根据内容控制编辑器高度,默认为true.
 
-Resize editor height Automatically
+Resize editor height automatically,default true.
+
+# 事件
+```html
+<editor @change="updateData"></editor>
+```
+
+### change
+
+每次内容有变动时触发,回传改变后的内容.
+
+Emited when the content changes,and pass the current content as event data.
 
 # License
 [Apache-2.0](http://opensource.org/licenses/Apache-2.0)

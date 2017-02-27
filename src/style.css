@@ -97,6 +97,8 @@
         user-select: none;
         border: 1px solid var(--border-color);
         border-radius: var(--border-radius);
+        margin-right: 4px;
+        margin-bottom: 4px;
 
         &:hover {
           border-color: color(var(--border-color) blackness(30%));
@@ -107,22 +109,9 @@
           opacity: .68;
         }
 
-        /*&.active, &:active, &:focus, &:hover {*/
-        /*opacity: .8;*/
-        /*}*/
-
-        /*&.active, &:active {*/
-        /*outline: 0;*/
-        /*box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);*/
-        /*}*/
-        /*&:focus {*/
-        /*border-color: #8c8c8c;*/
-        /*text-decoration: none;*/
-        /*}*/
-        /*&:hover {*/
-        /*border-color: #adadad;*/
-        /*text-decoration: none;*/
-        /*}*/
+        &:last-child {
+          margin-right: 0;
+        }
       }
 
       & input, button, select {

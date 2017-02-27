@@ -21,15 +21,25 @@
 </div>
 
 <script>
-    Vue.use(VueHtml5Editor)
+    Vue.use(VueHtml5Editor, {
+        image: {
+            sizeLimit: 512 * 1024,
+            compress: true,
+            width: 500,
+            height: 500,
+            quality: 80
+        }
+    })
+
     new Vue({
         el: "#app",
         data: {
             content: "<h3>vue html5 editor</h3>",
         },
-        methods:{
+        methods: {
             updateData(data){
-                console.log('the content changed')
+                // sync content to component
+                this.content = data
             }
         }
     })

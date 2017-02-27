@@ -41,16 +41,18 @@ export default {
         setHeading(heading){
             this.$parent.execCommand('formatBlock', `h${heading}`)
         },
-        _contains(arr, el){
-            for (let i = 0; i < arr.length; i++) {
-                if (arr[i] === el) {
-                    return true
-                }
-            }
-            return false
-        },
         setLineHeight(lh){
             this.$parent.execCommand(Command.LINE_HEIGHT, lh)
+        }
+    },
+    created(){
+        const config = this.$options.module.config
+        // font name
+        if (!config) {
+            return
+        }
+        if (Array.isArray(config.fontNames)) {
+            this.nameList = config.fontNames
         }
     }
 }

@@ -8,6 +8,7 @@ import clean from 'postcss-clean'
 import atImport from 'postcss-import'
 import nodeResolve from 'rollup-plugin-node-resolve'
 import replace from 'rollup-plugin-replace'
+import commonJs from 'rollup-plugin-commonjs'
 var pkg = require('./package.json')
 
 /**
@@ -43,6 +44,9 @@ export default {
                 collapseBooleanAttributes: true,
                 conservativeCollapse: true
             }
+        }),
+        commonJs({
+            include: 'node_modules/lrz/**'
         }),
         nodeResolve({jsnext: true}),
         buble({
