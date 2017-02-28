@@ -6,7 +6,8 @@
                 <template v-for="module in modules">
                     <li v-if="module.show" :title="locale[module.i18n]"
                         @click="activeModule(module)">
-                        <span class="icon" :class="module.icon"></span>
+                        <!-- <span class="icon" :class="module.icon"></span> -->
+                        <icon-component :value="module.icon"></icon-component>
                     </li>
                 </template>
             </ul>
