@@ -27,9 +27,7 @@ export default {
             type: Boolean,
             default: true
         },
-        showModuleName: {
-            type: Object
-        }
+        showModuleName: {}
     },
     data(){
         return {

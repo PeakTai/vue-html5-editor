@@ -1,7 +1,7 @@
 /**
  * Vue-html5-editor 1.0.0
  * https://github.com/PeakTai/vue-html5-editor
- * build at Mon Mar 06 2017 17:12:07 GMT+0800 (CST)
+ * build at Mon Mar 06 2017 17:49:58 GMT+0800 (CST)
  */
 
 (function (global, factory) {
@@ -1066,9 +1066,7 @@ var editor = {
             type: Boolean,
             default: true
         },
-        showModuleName: {
-            type: Object
-        }
+        showModuleName: {}
     },
     data: function data(){
         return {
