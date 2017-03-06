@@ -49,6 +49,8 @@ template code as follows
 Vue.use(VueHtml5Editor, {
     //global component name
     name: "vue-html5-editor",
+    // custom icon template, default (<span class="icon {{value}}"></span>)
+    iconTemplate: '<span class="icon {{value}}"></span>',
     //custom icon class of built-in modules,default using font-awesome
     icons: {
         text: "fa fa-pencil",
