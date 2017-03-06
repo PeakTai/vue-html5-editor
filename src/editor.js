@@ -28,8 +28,7 @@ export default {
             default: true
         },
         showModuleName: {
-            type: Boolean,
-            default: false
+            type: Object
         }
     },
     data(){

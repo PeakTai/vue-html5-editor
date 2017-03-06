@@ -4,7 +4,7 @@
             <template v-for="module in modules">
                 <li :title="locale[module.i18n]" @click="activeModule(module)">
                     <span class="icon" :class="module.icon"></span>
-                    <template v-if="showModuleName || defaultShowModuleName">
+                    <template v-if="showModuleName === undefined ? defaultShowModuleName : showModuleName">
                         &nbsp;{{locale[module.i18n]}}
                     </template>
                 </li>

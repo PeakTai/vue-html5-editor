@@ -38,7 +38,6 @@ var align = {
     name: 'align',
     icon: 'fa fa-align-center',
     i18n: 'align',
-    show: true,
     dashboard: dashboard
 };
 
@@ -79,7 +78,6 @@ var color = {
     name: 'color',
     icon: 'fa fa-paint-brush',
     i18n: 'color',
-    show: true,
     dashboard: dashboard$1
 };
 
@@ -91,7 +89,6 @@ var eraser = {
     name: 'eraser',
     icon: 'fa fa-eraser',
     i18n: 'eraser',
-    show: true,
     handler: function handler(editor) {
         editor.execCommand('removeFormat');
     }
@@ -194,7 +191,6 @@ var font = {
     name: 'font',
     icon: 'fa fa-font',
     i18n: 'font',
-    show: true,
     dashboard: dashboard$2
 };
 
@@ -206,7 +202,6 @@ var fullScreen$1 = {
     name: 'full-screen',
     icon: 'fa fa-arrows-alt',
     i18n: 'full screen',
-    show: true,
     handler: function handler(editor) {
         editor.toggleFullScreen();
     }
@@ -219,7 +214,6 @@ var fullScreen$1 = {
 var hr = {
     name: 'hr',
     icon: 'fa fa-minus',
-    show: true,
     i18n: 'hr',
     handler: function handler(editor) {
         editor.execCommand('insertHorizontalRule');
@@ -394,7 +388,6 @@ var image = {
     name: 'image',
     icon: 'fa fa-file-image-o',
     i18n: 'image',
-    show: true,
     config: {
         server: null,
         fieldName: 'image',
@@ -432,7 +425,6 @@ var dashboard$4 = {
 var info = {
     name: 'info',
     icon: 'fa fa-info',
-    show: true,
     i18n: 'info',
     // handler () {
     //
@@ -471,7 +463,6 @@ var dashboard$5 = {
 var link = {
     name: 'link',
     icon: 'fa fa-chain',
-    show: true,
     i18n: 'link',
     dashboard: dashboard$5
 };
@@ -492,7 +483,6 @@ var dashboard$6 = {
 var list = {
     name: 'list',
     icon: 'fa fa-list',
-    show: true,
     i18n: 'list',
     dashboard: dashboard$6
 };
@@ -546,7 +536,6 @@ var table = {
     name: 'tabulation',
     icon: 'fa fa-table',
     i18n: 'table',
-    show: true,
     dashboard: dashboard$7
 };
 
@@ -564,7 +553,6 @@ var text = {
     name: 'text',
     icon: 'fa fa-pencil',
     i18n: 'text',
-    show: true,
     dashboard: dashboard$8
 };
 
@@ -575,7 +563,6 @@ var text = {
 var undo = {
     name: 'undo',
     icon: 'fa-undo fa',
-    show: true,
     i18n: 'undo',
     handler: function handler(editor) {
         editor.execCommand('undo');
@@ -589,7 +576,6 @@ var undo = {
 var unlink = {
     name: 'unlink',
     icon: 'fa fa-chain-broken',
-    show: true,
     i18n: 'unlink',
     handler: function handler(editor) {
         editor.execCommand('unlink');
@@ -1046,7 +1032,7 @@ RangeHandler.prototype.execCommand = function execCommand (command, arg) {
 
 __$styleInject(".vue-html5-editor{font-size:14px;line-height:1.5;background-color:#fff;color:#333;border:1px solid #ddd;text-align:left;border-radius:5px;overflow:hidden;box-sizing:border-box}.vue-html5-editor.full-screen{position:fixed!important;top:0!important;left:0!important;bottom:0!important;right:0!important;border-radius:0}.vue-html5-editor>.toolbar{position:relative;background-color:inherit}.vue-html5-editor>.toolbar>ul{list-style:none;padding:0;margin:0;border-bottom:1px solid #ddd}.vue-html5-editor>.toolbar>ul>li{display:inline-block;cursor:pointer;text-align:center;line-height:36px;padding:0 10px}.vue-html5-editor>.toolbar>ul>li .icon{height:16px;width:16px;display:inline-block;vertical-align:middle}.vue-html5-editor>.toolbar>.dashboard{background-color:inherit;border-bottom:1px solid #ddd;padding:10px;position:absolute;top:100%;left:0;right:0;overflow:auto}.vue-html5-editor>.toolbar>.dashboard input[type=text],.vue-html5-editor>.toolbar>.dashboard input[type=number],.vue-html5-editor>.toolbar>.dashboard select{padding:6px 12px;color:inherit;background-color:transparent;border:1px solid #ddd;border-radius:5px}.vue-html5-editor>.toolbar>.dashboard input[type=text]:hover,.vue-html5-editor>.toolbar>.dashboard input[type=number]:hover,.vue-html5-editor>.toolbar>.dashboard select:hover{border-color:#bebebe}.vue-html5-editor>.toolbar>.dashboard input[type=text][disabled],.vue-html5-editor>.toolbar>.dashboard input[type=text][readonly],.vue-html5-editor>.toolbar>.dashboard input[type=number][disabled],.vue-html5-editor>.toolbar>.dashboard input[type=number][readonly],.vue-html5-editor>.toolbar>.dashboard select[disabled],.vue-html5-editor>.toolbar>.dashboard select[readonly]{background-color:#eee;opacity:1}.vue-html5-editor>.toolbar>.dashboard input[type=text][disabled],.vue-html5-editor>.toolbar>.dashboard input[type=number][disabled],.vue-html5-editor>.toolbar>.dashboard select[disabled]{cursor:not-allowed}.vue-html5-editor>.toolbar>.dashboard button{color:inherit;background-color:inherit;padding:6px 12px;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border:1px solid #ddd;border-radius:5px;margin-right:4px;margin-bottom:4px}.vue-html5-editor>.toolbar>.dashboard button:hover{border-color:#bebebe}.vue-html5-editor>.toolbar>.dashboard button[disabled]{cursor:not-allowed;opacity:.68}.vue-html5-editor>.toolbar>.dashboard button:last-child{margin-right:0}.vue-html5-editor>.toolbar>.dashboard label{font-weight:bolder}.vue-html5-editor>.content{overflow:auto;padding:10px}.vue-html5-editor>.content:focus{outline:0}",undefined);
 
-var template$9 = "<div class=\"vue-html5-editor\" :class=\"{'full-screen':fullScreen}\" :style=\"{'z-index':zIndex}\"> <div class=\"toolbar\" :style=\"{'z-index':zIndex+1}\" ref=\"toolbar\"> <ul> <template v-for=\"module in modules\"> <li v-if=\"module.show\" :title=\"locale[module.i18n]\" @click=\"activeModule(module)\"> <span class=\"icon\" :class=\"module.icon\"></span> <template v-if=\"showModuleName || defaultShowModuleName\"> &nbsp;{{locale[module.i18n]}} </template> </li> </template> </ul> <div class=\"dashboard\" v-show=\"dashboard\" :style=\"dashboardStyle\"> <keep-alive> <div v-if=\"dashboard\" :is=\"dashboard\"></div> </keep-alive> </div> </div> <div class=\"content\" ref=\"content\" :style=\"contentStyle\" contenteditable @click=\"toggleDashboard(dashboard)\"> </div> </div>";
+var template$9 = "<div class=\"vue-html5-editor\" :class=\"{'full-screen':fullScreen}\" :style=\"{'z-index':zIndex}\"> <div class=\"toolbar\" :style=\"{'z-index':zIndex+1}\" ref=\"toolbar\"> <ul> <template v-for=\"module in modules\"> <li :title=\"locale[module.i18n]\" @click=\"activeModule(module)\"> <span class=\"icon\" :class=\"module.icon\"></span> <template v-if=\"showModuleName === undefined ? defaultShowModuleName : showModuleName\"> &nbsp;{{locale[module.i18n]}} </template> </li> </template> </ul> <div class=\"dashboard\" v-show=\"dashboard\" :style=\"dashboardStyle\"> <keep-alive> <div v-if=\"dashboard\" :is=\"dashboard\"></div> </keep-alive> </div> </div> <div class=\"content\" ref=\"content\" :style=\"contentStyle\" contenteditable @click=\"toggleDashboard(dashboard)\"> </div> </div>";
 
 /**
  * Created by peak on 2017/2/9.
@@ -1075,8 +1061,7 @@ var editor = {
             default: true
         },
         showModuleName: {
-            type: Boolean,
-            default: false
+            type: Object
         }
     },
     data: function data(){
