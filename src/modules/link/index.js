@@ -7,7 +7,6 @@ import dashboard from './dashboard'
 export default {
     name: 'link',
     icon: 'fa fa-chain',
-    show: true,
     i18n: 'link',
     dashboard
 }

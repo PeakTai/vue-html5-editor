@@ -7,7 +7,6 @@ import dashboard from './dashboard'
 export default {
     name: 'info',
     icon: 'fa fa-info',
-    show: true,
     i18n: 'info',
     // handler () {
     //

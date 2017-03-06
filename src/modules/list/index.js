@@ -7,7 +7,6 @@ import dashboard from './dashboard'
 export default {
     name: 'list',
     icon: 'fa fa-list',
-    show: true,
     i18n: 'list',
     dashboard
 }

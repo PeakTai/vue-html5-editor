@@ -7,6 +7,5 @@ export default {
     name: 'font',
     icon: 'fa fa-font',
     i18n: 'font',
-    show: true,
     dashboard
 }

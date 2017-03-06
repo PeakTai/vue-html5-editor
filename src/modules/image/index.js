@@ -8,7 +8,6 @@ export default {
     name: 'image',
     icon: 'fa fa-file-image-o',
     i18n: 'image',
-    show: true,
     config: {
         server: null,
         fieldName: 'image',

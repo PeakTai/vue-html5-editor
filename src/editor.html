@@ -2,7 +2,7 @@
     <div class="toolbar" :style="{'z-index':zIndex+1}" ref="toolbar">
         <ul>
             <template v-for="module in modules">
-                <li v-if="module.show" :title="locale[module.i18n]" @click="activeModule(module)">
+                <li :title="locale[module.i18n]" @click="activeModule(module)">
                     <span class="icon" :class="module.icon"></span>
                     <template v-if="showModuleName || defaultShowModuleName">
                         &nbsp;{{locale[module.i18n]}}

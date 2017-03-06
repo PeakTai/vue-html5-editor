@@ -8,7 +8,6 @@ export default {
     name: 'text',
     icon: 'fa fa-pencil',
     i18n: 'text',
-    show: true,
     dashboard
 }
 
