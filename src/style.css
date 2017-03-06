@@ -45,13 +45,14 @@
       & > li {
         display: inline-block;
         cursor: pointer;
-        width: 50px;
         text-align: center;
         line-height: 36px;
+        padding: 0 10px;
         & .icon {
           height: 16px;
           width: 16px;
           display: inline-block;
+          vertical-align: middle;
         }
       }
     }

@@ -26,11 +26,17 @@ export default {
         autoHeight: {
             type: Boolean,
             default: true
+        },
+        showModuleName: {
+            type: Boolean,
+            default: false
         }
     },
     data(){
         return {
+            // defaultShowModuleName:false
             // locale: {},
+            // modules:{},
             fullScreen: false,
             dashboard: null,
             dashboardStyle: {}
@@ -76,6 +82,15 @@ export default {
     methods: {
         toggleFullScreen(){
             this.fullScreen = !this.fullScreen
+        },
+        enableFullScreen(){
+            this.fullScreen = true
+        },
+        exitFullScreen(){
+            this.fullScreen = false
+        },
+        focus(){
+            this.$refs.content.focus()
         },
         toggleDashboard(dashboard){
             this.dashboard = this.dashboard === dashboard ? null : dashboard

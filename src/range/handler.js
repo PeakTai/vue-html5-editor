@@ -145,7 +145,7 @@ export default class RangeHandler {
                         this.range.startOffset, this.range.endOffset)
                     span.style.fontSize = arg
                     const frontPart = document.createTextNode(
-                        textNode.textContent.substring(0, this.range.startOffset + 1))
+                        textNode.textContent.substring(0, this.range.startOffset))
                     textNode.parentNode.insertBefore(frontPart, textNode)
                     textNode.parentNode.insertBefore(span, textNode)
                     textNode.textContent = textNode.textContent.substring(this.range.endOffset)

@@ -17,7 +17,15 @@
 </head>
 <body>
 <div id="app">
-    <vue-html5-editor :content="content" :height="500" @change="updateData"></vue-html5-editor>
+    <p>
+        <button type="button" @click="focus">focus</button>
+        <button type="button" @click="fullScreen">full screen</button>
+        <button type="button" @click="showModuleName=!showModuleName">toggle module name</button>
+        <span style="white-space: nowrap">content length : {{content.length}}</span>
+    </p>
+
+    <vue-html5-editor :content="content" :height="300" :show-module-name="showModuleName"
+                      @change="updateData" ref="editor"></vue-html5-editor>
 </div>
 
 <script>
@@ -35,11 +43,18 @@
         el: "#app",
         data: {
             content: "<h3>vue html5 editor</h3>",
+            showModuleName: false,
         },
         methods: {
             updateData(data){
                 // sync content to component
                 this.content = data
+            },
+            fullScreen(){
+                this.$refs.editor.enableFullScreen()
+            },
+            focus(){
+                this.$refs.editor.focus()
             }
         }
     })

@@ -80,10 +80,13 @@ class VueHtml5Editor {
         const language = options.language || 'en-us'
         const locale = i18n[language]
 
+        // showModuleName
+        const defaultShowModuleName = !!options.showModuleName
+
         // ######################################
         const compo = mixin(editor, {
             data() {
-                return {modules, locale}
+                return {modules, locale, defaultShowModuleName}
             },
             components
         })
