@@ -9,6 +9,7 @@ import atImport from 'postcss-import'
 import nodeResolve from 'rollup-plugin-node-resolve'
 import replace from 'rollup-plugin-replace'
 import commonJs from 'rollup-plugin-commonjs'
+import license from 'rollup-plugin-license'
 var pkg = require('./package.json')
 
 /**
@@ -20,6 +21,9 @@ export default {
     format: 'umd',
     moduleName: "VueHtml5Editor",
     plugins: [
+        license({
+            banner: `Vue-html5-editor ${pkg.version}\n${pkg.repository.url}\nbuild at ${new Date()}`
+        }),
         progress({
             clearLine: false
         }),

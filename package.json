@@ -40,6 +40,7 @@
     "rollup-plugin-css-only": "^0.2.0",
     "rollup-plugin-flow-no-whitespace": "^1.0.0",
     "rollup-plugin-html": "^0.2.1",
+    "rollup-plugin-license": "^0.3.0",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-postcss": "^0.2.0",
     "rollup-plugin-progress": "^0.2.1",

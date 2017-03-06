@@ -1,3 +1,9 @@
+/**
+ * Vue-html5-editor 1.0.0
+ * https://github.com/PeakTai/vue-html5-editor
+ * build at Mon Mar 06 2017 17:12:07 GMT+0800 (CST)
+ */
+
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
