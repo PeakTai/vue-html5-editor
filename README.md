@@ -32,12 +32,14 @@ Vue.use(VueHtml5Editor,options);
 ```js
 const editor1 = new VueHtml5Editor(options1)
 const app1 = new Vue({
-    components:{editor1
+    components:{
+        editor1
     }
 })
 const editor2 = new VueHtml5Editor(options2)
 const app2 = new Vue({
-    components:{editor2
+    components:{
+        editor2
     }
 })
 ```
@@ -74,6 +76,9 @@ Vue.use(VueHtml5Editor, {
     // 全局组件名称，使用new VueHtml5Editor(options)时该选项无效 
     // global component name
     name: "vue-html5-editor",
+    // 是否显示模块名称，开启的话会在工具栏的图标后台直接显示名称
+    // if set true,will append module name to toolbar after icon
+    showModuleName: false,
     // 自定义各个图标的class，默认使用的是font-awesome提供的图标
     // custom icon class of built-in modules,default using font-awesome
     icons: {
@@ -205,7 +210,7 @@ Vue.use(VueHtml5Editor, {
 # 组件属性 attributes
 
 ```html
-<editor :content="content" :height="500" :z-index="1000" :auto-height="true"></editor>
+<editor :content="content" :height="500" :z-index="1000" :auto-height="true" :show-module-name="false"></editor>
 ```
 
 ### content
@@ -231,6 +236,12 @@ Sets z-index style property of editor,default 1000.
 是否自动根据内容控制编辑器高度,默认为true.
 
 Resize editor height automatically,default true.
+
+### show-module-name
+
+局部设置是否显示模块名称，会覆盖全局的设定.
+
+sset `showModuleName` locally.
 
 # 事件
 ```html
