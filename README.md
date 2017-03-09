@@ -241,7 +241,7 @@ Resize editor height automatically,default true.
 
 局部设置是否显示模块名称，会覆盖全局的设定.
 
-sset `showModuleName` locally.
+Set `showModuleName` locally.
 
 # 事件
 ```html
