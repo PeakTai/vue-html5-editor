@@ -1,9 +1,11 @@
+import polyfill from './polyfill-ie'
 import buildInModules from './modules/index'
 import editor from './editor'
 import i18nZhCn from './i18n/zh-cn'
 import i18nEnUs from './i18n/en-us'
 import mixin from './util/mixin'
 
+polyfill()
 /**
  * Vue html5 Editor
  * @param Vue   {Vue}

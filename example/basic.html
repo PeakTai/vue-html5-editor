@@ -47,14 +47,14 @@
             showModuleName: false,
         },
         methods: {
-            updateData(data){
+            updateData: function (data) {
                 // sync content to component
                 this.content = data
             },
-            fullScreen(){
+            fullScreen: function () {
                 this.$refs.editor.enableFullScreen()
             },
-            focus(){
+            focus: function () {
                 this.$refs.editor.focus()
             }
         }

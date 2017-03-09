@@ -8,6 +8,14 @@ import {
     isInlineElement
 } from './util'
 
+// for IE 11
+if (!Text.prototype.contains) {
+    Text.prototype.contains = function contains(otherNode) {
+        return this === otherNode
+    }
+}
+
+
 /**
  * Created by peak on 2017/2/14.
  */

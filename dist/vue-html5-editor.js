@@ -1,7 +1,7 @@
 /**
  * Vue-html5-editor 1.0.0
  * https://github.com/PeakTai/vue-html5-editor
- * build at Mon Mar 06 2017 17:49:58 GMT+0800 (CST)
+ * build at Thu Mar 09 2017 16:42:28 GMT+0800 (CST)
  */
 
 (function (global, factory) {
@@ -26,6 +26,62 @@ function __$styleInject(css, returnValue) {
   head.appendChild(style);
   return returnValue;
 }
+
+var polyfill = function () {
+    // https://tc39.github.io/ecma262/#sec-array.prototype.includes
+    if (!Array.prototype.includes) {
+        Object.defineProperty(Array.prototype, 'includes', {
+            value: function value(searchElement, fromIndex) {
+                // 1. Let O be ? ToObject(this value).
+                if (this == null) {
+                    throw new TypeError('"this" is null or not defined')
+                }
+
+                var o = Object(this);
+
+                // 2. Let len be ? ToLength(? Get(O, "length")).
+                var len = o.length >>> 0;
+
+                // 3. If len is 0, return false.
+                if (len === 0) {
+                    return false
+                }
+
+                // 4. Let n be ? ToInteger(fromIndex).
+                //    (If fromIndex is undefined, this step produces the value 0.)
+                var n = fromIndex | 0;
+
+                // 5. If n ≥ 0, then
+                //  a. Let k be n.
+                // 6. Else n < 0,
+                //  a. Let k be len + n.
+                //  b. If k < 0, let k be 0.
+                var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+
+                // 7. Repeat, while k < len
+                while (k < len) {
+                    // a. Let elementK be the result of ? Get(O, ! ToString(k)).
+                    // b. If SameValueZero(searchElement, elementK) is true, return true.
+                    // c. Increase k by 1.
+                    // NOTE: === provides the correct "SameValueZero" comparison needed here.
+                    if (o[k] === searchElement) {
+                        return true
+                    }
+                    k++;
+                }
+
+                // 8. Return false
+                return false
+            }
+        });
+    }
+    // text.contains()
+    if (!Text.prototype.contains) {
+        Text.prototype.contains = function contains(node) {
+            return this === node
+        };
+    }
+};
 
 var template = "<div> <button type=\"button\" @click=\"$parent.execCommand('justifyLeft')\"> {{$parent.locale[\"left justify\"]}} </button> <button type=\"button\" @click=\"$parent.execCommand('justifyCenter')\"> {{$parent.locale[\"center justify\"]}} </button> <button type=\"button\" @click=\"$parent.execCommand('justifyRight')\"> {{$parent.locale[\"right justify\"]}} </button> </div>";
 
@@ -743,6 +799,14 @@ var isInlineElement = function (node) {
     return inlineNodeNames.includes(node.nodeName)
 };
 
+// for IE 11
+if (!Text.prototype.contains) {
+    Text.prototype.contains = function contains(otherNode) {
+        return this === otherNode
+    };
+}
+
+
 /**
  * Created by peak on 2017/2/14.
  */
@@ -1143,14 +1207,24 @@ var editor = {
             return this.range
         },
         saveCurrentRange: function saveCurrentRange(){
+            var this$1 = this;
+
             var selection = window.getSelection ? window.getSelection() : document.getSelection();
-            var range = selection.rangeCount ? selection.getRangeAt(0) : null;
-            if (!range) {
+            if (!selection.rangeCount) {
                 return
             }
-            if (this.$refs.content.contains(range.startContainer) &&
-                this.$refs.content.contains(range.endContainer)) {
-                this.range = range;
+            var content = this.$refs.content;
+            for (var i = 0; i < selection.rangeCount; i++) {
+                var range = selection.getRangeAt(0);
+                var start = range.startContainer;
+                var end = range.endContainer;
+                // for IE11 : node.contains(textNode) always return false
+                start = start.nodeType === Node.TEXT_NODE ? start.parentNode : start;
+                end = end.nodeType === Node.TEXT_NODE ? end.parentNode : end;
+                if (content.contains(start) && content.contains(end)) {
+                    this$1.range = range;
+                    break
+                }
             }
         },
         restoreSelection: function restoreSelection(){
@@ -1194,12 +1268,15 @@ var editor = {
         var content = this.$refs.content;
         content.innerHTML = this.content;
         content.addEventListener('mouseup', this.saveCurrentRange, false);
-        content.addEventListener('keyup', this.saveCurrentRange, false);
-        content.addEventListener('mouseout', this.saveCurrentRange, false);
         content.addEventListener('keyup', function () {
             this$1.$emit('change', content.innerHTML);
+            this$1.saveCurrentRange();
         }, false);
-
+        content.addEventListener('mouseout', function (e) {
+            if (e.target === content) {
+                this$1.saveCurrentRange();
+            }
+        }, false);
         this.touchHandler = function (e) {
             if (content.contains(e.target)) {
                 this$1.saveCurrentRange();
@@ -1349,6 +1426,7 @@ function mixin(source, ext) {
     return source
 }
 
+polyfill();
 /**
  * Vue html5 Editor
  * @param Vue   {Vue}

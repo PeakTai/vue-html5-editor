@@ -105,13 +105,21 @@ export default {
         },
         saveCurrentRange(){
             const selection = window.getSelection ? window.getSelection() : document.getSelection()
-            const range = selection.rangeCount ? selection.getRangeAt(0) : null
-            if (!range) {
+            if (!selection.rangeCount) {
                 return
             }
-            if (this.$refs.content.contains(range.startContainer) &&
-                this.$refs.content.contains(range.endContainer)) {
-                this.range = range
+            const content = this.$refs.content
+            for (let i = 0; i < selection.rangeCount; i++) {
+                const range = selection.getRangeAt(0)
+                let start = range.startContainer
+                let end = range.endContainer
+                // for IE11 : node.contains(textNode) always return false
+                start = start.nodeType === Node.TEXT_NODE ? start.parentNode : start
+                end = end.nodeType === Node.TEXT_NODE ? end.parentNode : end
+                if (content.contains(start) && content.contains(end)) {
+                    this.range = range
+                    break
+                }
             }
         },
         restoreSelection(){
@@ -151,12 +159,15 @@ export default {
         const content = this.$refs.content
         content.innerHTML = this.content
         content.addEventListener('mouseup', this.saveCurrentRange, false)
-        content.addEventListener('keyup', this.saveCurrentRange, false)
-        content.addEventListener('mouseout', this.saveCurrentRange, false)
         content.addEventListener('keyup', () => {
             this.$emit('change', content.innerHTML)
+            this.saveCurrentRange()
         }, false)
-
+        content.addEventListener('mouseout', (e) => {
+            if (e.target === content) {
+                this.saveCurrentRange()
+            }
+        }, false)
         this.touchHandler = (e) => {
             if (content.contains(e.target)) {
                 this.saveCurrentRange()
