@@ -43,7 +43,7 @@ export default {
         content(val) {
             const content = this.$refs.content.innerHTML
             if (val !== content) {
-                this.$res.content.innerHTML = val
+                this.$refs.content.innerHTML = val
             }
         },
         fullScreen(val){

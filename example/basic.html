@@ -21,6 +21,7 @@
         <button type="button" @click="focus">focus</button>
         <button type="button" @click="fullScreen">full screen</button>
         <button type="button" @click="showModuleName=!showModuleName">toggle module name</button>
+        <button type="button" @click="reset">change content</button>
         <span style="white-space: nowrap">content length : {{content.length}}</span>
     </p>
 
@@ -56,6 +57,12 @@
             },
             focus: function () {
                 this.$refs.editor.focus()
+            },
+            reset:function () {
+                var newContent = prompt('please input some html code: ')
+                if(newContent){
+                    this.content = newContent
+                }
             }
         }
     })

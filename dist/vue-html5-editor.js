@@ -1,7 +1,7 @@
 /**
- * Vue-html5-editor 1.0.0
+ * Vue-html5-editor 1.0.1
  * https://github.com/PeakTai/vue-html5-editor
- * build at Thu Mar 09 2017 16:42:28 GMT+0800 (CST)
+ * build at Mon Mar 13 2017 10:41:57 GMT+0800 (CST)
  */
 
 (function (global, factory) {
@@ -475,7 +475,7 @@ var dashboard$4 = {
     template: template$4,
     data: function data(){
         return {
-            version: "1.0.0"
+            version: "1.0.1"
         }
     }
 };
@@ -1146,7 +1146,7 @@ var editor = {
         content: function content(val) {
             var content = this.$refs.content.innerHTML;
             if (val !== content) {
-                this.$res.content.innerHTML = val;
+                this.$refs.content.innerHTML = val;
             }
         },
         fullScreen: function fullScreen(val){
