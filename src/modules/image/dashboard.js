@@ -126,6 +126,11 @@ export default {
             }
 
             xhr.open('POST', config.server)
+
+            for(var prop in config.requestHeader) {
+                xhr.setRequestHeader(prop, config.requestHeader[prop]);
+            }
+            
             xhr.send(formData)
         }
     }
