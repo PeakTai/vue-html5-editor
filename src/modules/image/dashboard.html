@@ -11,7 +11,7 @@
     </div>
 
     <div v-if="upload.status=='progress'">
-        {{$parent.locale.progress}}:{{progressComputable ? $parent.locale.unknown : upload.complete}}
+        {{$parent.locale.progress}}:{{upload.progressComputable ? $parent.locale.unknown : upload.complete}}
     </div>
 
     <div v-if="upload.status=='success'">
@@ -19,7 +19,7 @@
     </div>
 
     <div v-if="upload.status=='error'">
-        {{$parent.locale.error}}:{{errorMsg}}
+        {{$parent.locale.error}}:{{upload.errorMsg}}
         <button type="button" @click="reset">{{$parent.locale.reset}}</button>
     </div>
 

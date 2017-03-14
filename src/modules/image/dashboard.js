@@ -101,7 +101,7 @@ export default {
 
             xhr.onload = () => {
                 if (xhr.status !== 200) {
-                    this.setUploadError(`upload error,code ${xhr.status}`)
+                    this.setUploadError(`request error,code ${xhr.status}`)
                     return
                 }
 
@@ -117,8 +117,9 @@ export default {
                 }
             }
 
-            xhr.onerror = (e) => {
-                this.setUploadError(e.toString())
+            xhr.onerror = () => {
+                // find network info in brower tools
+                this.setUploadError('request error')
             }
 
             xhr.onabort = () => {
