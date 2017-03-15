@@ -1,7 +1,7 @@
 /**
- * Vue-html5-editor 1.0.1
+ * Vue-html5-editor 1.0.2
  * https://github.com/PeakTai/vue-html5-editor
- * build at Mon Mar 13 2017 10:41:57 GMT+0800 (CST)
+ * build at Tue Mar 14 2017 18:41:09 GMT+0800 (CST)
  */
 
 (function (global, factory) {
@@ -307,7 +307,7 @@ var t=new Array(arguments.length-1);if(arguments.length>1){ for(var n=1;n<argume
 e.exports=window.lrz;}])});
 });
 
-var template$3 = "<div> <div v-show=\"upload.status=='ready'\"> <input type=\"text\" v-model=\"imageUrl\" maxlength=\"255\" :placeholder=\"$parent.locale['please enter a url']\"> <button type=\"button\" @click=\"insertImageUrl\">{{$parent.locale.save}}</button> <input type=\"file\" ref=\"file\" style=\"display: none !important\" @change=\"startUpload\" accept=\"image/png,image/jpeg,image/gif,image/jpg\"> <button type=\"button\" @click=\"pick\">{{$parent.locale.upload}}</button> </div> <div v-if=\"upload.status=='progress'\"> {{$parent.locale.progress}}:{{progressComputable ? $parent.locale.unknown : upload.complete}} </div> <div v-if=\"upload.status=='success'\"> {{$parent.locale[\"please wait\"]}}... </div> <div v-if=\"upload.status=='error'\"> {{$parent.locale.error}}:{{errorMsg}} <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> <div v-if=\"upload.status=='abort'\"> {{$parent.locale.upload}}&nbsp;{{$parent.locale.abort}}, <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> </div> ";
+var template$3 = "<div> <div v-show=\"upload.status=='ready'\"> <input type=\"text\" v-model=\"imageUrl\" maxlength=\"255\" :placeholder=\"$parent.locale['please enter a url']\"> <button type=\"button\" @click=\"insertImageUrl\">{{$parent.locale.save}}</button> <input type=\"file\" ref=\"file\" style=\"display: none !important\" @change=\"startUpload\" accept=\"image/png,image/jpeg,image/gif,image/jpg\"> <button type=\"button\" @click=\"pick\">{{$parent.locale.upload}}</button> </div> <div v-if=\"upload.status=='progress'\"> {{$parent.locale.progress}}:{{upload.progressComputable ? $parent.locale.unknown : upload.complete}} </div> <div v-if=\"upload.status=='success'\"> {{$parent.locale[\"please wait\"]}}... </div> <div v-if=\"upload.status=='error'\"> {{$parent.locale.error}}:{{upload.errorMsg}} <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> <div v-if=\"upload.status=='abort'\"> {{$parent.locale.upload}}&nbsp;{{$parent.locale.abort}}, <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> </div> ";
 
 /**
  * Created by peak on 2017/2/10.
@@ -412,7 +412,7 @@ var dashboard$3 = {
 
             xhr.onload = function () {
                 if (xhr.status !== 200) {
-                    this$1.setUploadError(("upload error,code " + (xhr.status)));
+                    this$1.setUploadError(("request error,code " + (xhr.status)));
                     return
                 }
 
@@ -428,8 +428,9 @@ var dashboard$3 = {
                 }
             };
 
-            xhr.onerror = function (e) {
-                this$1.setUploadError(e.toString());
+            xhr.onerror = function () {
+                // find network info in brower tools
+                this$1.setUploadError('request error');
             };
 
             xhr.onabort = function () {
@@ -475,7 +476,7 @@ var dashboard$4 = {
     template: template$4,
     data: function data(){
         return {
-            version: "1.0.1"
+            version: "1.0.2"
         }
     }
 };
