@@ -128,10 +128,13 @@ export default {
 
             xhr.open('POST', config.server)
 
-            for(var prop in config.requestHeader) {
-                xhr.setRequestHeader(prop, config.requestHeader[prop]);
+            if (typeof config.requestHeader === 'object') {
+                Object.keys(config.requestHeader).forEach((key) => {
+                    xhr.setRequestHeader(key, config.requestHeader[key])
+                })
             }
-            
+
+
             xhr.send(formData)
         }
     }
