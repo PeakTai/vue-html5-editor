@@ -116,6 +116,9 @@ Vue.use(VueHtml5Editor, {
         width: 1600,
         height: 1600,
         quality: 80,
+        // 请求头配置
+        // request header configuration
+        requestHeader: {},
         // 响应数据处理
         // handle response data，return image url
         uploadHandler(responseText){

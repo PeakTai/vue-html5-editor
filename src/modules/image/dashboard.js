@@ -127,6 +127,14 @@ export default {
             }
 
             xhr.open('POST', config.server)
+
+            if (typeof config.requestHeader === 'object') {
+                Object.keys(config.requestHeader).forEach((key) => {
+                    xhr.setRequestHeader(key, config.requestHeader[key])
+                })
+            }
+
+
             xhr.send(formData)
         }
     }

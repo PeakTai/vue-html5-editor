@@ -1,7 +1,7 @@
 /**
  * Vue-html5-editor 1.0.2
  * https://github.com/PeakTai/vue-html5-editor
- * build at Tue Mar 14 2017 18:41:09 GMT+0800 (CST)
+ * build at Wed Mar 15 2017 10:51:42 GMT+0800 (CST)
  */
 
 (function (global, factory) {
@@ -438,6 +438,14 @@ var dashboard$3 = {
             };
 
             xhr.open('POST', config.server);
+
+            if (typeof config.requestHeader === 'object') {
+                Object.keys(config.requestHeader).forEach(function (key) {
+                    xhr.setRequestHeader(key, config.requestHeader[key]);
+                });
+            }
+
+
             xhr.send(formData);
         }
     }
