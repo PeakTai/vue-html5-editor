@@ -396,7 +396,11 @@ var dashboard$3 = {
             var config = this.$options.module.config;
             var formData = new FormData();
             formData.append(config.fieldName, file);
-
+		//支持传递更多的表单参数给服务端
+            for(var name in config.obj){
+            	 formData.append(name, config.obj[i]);
+            }
+		
             var xhr = new XMLHttpRequest();
 
             xhr.onprogress = function (e) {
