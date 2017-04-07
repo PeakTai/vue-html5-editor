@@ -35,8 +35,7 @@ export default {
             // locale: {},
             // modules:{},
             fullScreen: false,
-            dashboard: null,
-            dashboardStyle: {}
+            dashboard: null
         }
     },
     watch: {
@@ -177,7 +176,10 @@ export default {
         window.addEventListener('touchend', this.touchHandler, false)
     },
     updated(){
-        this.dashboardStyle = {'max-height': `${this.$refs.content.clientHeight}px`}
+        // update dashboard style
+        if (this.$refs.dashboard){
+            this.$refs.dashboard.style.minHeight = `${this.$refs.content.clientHeight}px`
+        }
     },
     beforeDestroy(){
         window.removeEventListener('touchend', this.touchHandler)
