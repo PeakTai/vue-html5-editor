@@ -10,7 +10,7 @@
                 </li>
             </template>
         </ul>
-        <div class="dashboard" v-show="dashboard" v-ref="dashboard">
+        <div class="dashboard" v-show="dashboard" ref="dashboard">
             <keep-alive>
                 <div v-show="dashboard" :is="dashboard"></div>
             </keep-alive>

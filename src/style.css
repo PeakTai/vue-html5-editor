@@ -23,6 +23,10 @@
   overflow: hidden;
   box-sizing: border-box;
 
+  & * {
+    box-sizing: border-box;
+  }
+
   &.full-screen {
     position: fixed !important;
     top: 0 !important;

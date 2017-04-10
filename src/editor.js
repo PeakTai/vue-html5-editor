@@ -178,7 +178,7 @@ export default {
     updated(){
         // update dashboard style
         if (this.$refs.dashboard){
-            this.$refs.dashboard.style.minHeight = `${this.$refs.content.clientHeight}px`
+            this.$refs.dashboard.style.maxHeight = `${this.$refs.content.clientHeight}px`
         }
     },
     beforeDestroy(){
