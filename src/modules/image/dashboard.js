@@ -36,9 +36,50 @@ export default {
             this.upload.status = 'error'
             this.upload.errorMsg = msg
         },
-        startUpload() {
+        process() {
             const component = this
             const config = this.$options.module.config
+            // compatibility with older format
+            // {
+            //     server: null,
+            //     fieldName: 'image',
+            //     compress: true,
+            //     width: 1600,
+            //     height: 1600,
+            //     quality: 80
+            // }
+            // ----------- divider ----------------
+            // {
+            //     upload: {
+            //         url: null,
+            //         headers: {},
+            //         params: {},
+            //         fieldName: {}
+            //     },
+            //     compress: {
+            //         width: 1600,
+            //         height: 1600,
+            //         quality: 80
+            //     },
+            // }
+
+            if (!config.upload && typeof config.server === 'string') {
+                config.upload = {url: config.server}
+            }
+            if (config.upload && !config.upload.url) {
+                config.upload = null
+            }
+            if (config.upload && typeof config.fieldName === 'string') {
+                config.upload.fieldName = config.fieldName
+            }
+
+            if (typeof config.compress === 'boolean') {
+                config.compress = {
+                    width: config.width,
+                    height: config.height,
+                    quality: config.quality
+                }
+            }
 
             const file = this.$refs.file.files[0]
             if (file.size > config.sizeLimit) {
@@ -47,15 +88,11 @@ export default {
             }
             this.$refs.file.value = null
 
-            // 需要压缩
             if (config.compress) {
-                lrz(file, {
-                    width: config.width,
-                    height: config.height,
-                    quality: config.quality,
-                    fieldName: config.fieldName
-                }).then((rst) => {
-                    if (config.server) {
+                config.compress.fieldName = config.upload && config.upload.fieldName
+                    ? config.upload.fieldName : 'image'
+                lrz(file, config.compress).then((rst) => {
+                    if (config.upload) {
                         component.uploadToServer(rst.file)
                     } else {
                         component.insertBase64(rst.base64)
@@ -67,7 +104,7 @@ export default {
             }
             // 不需要压缩
             // base64
-            if (!config.server) {
+            if (!config.upload) {
                 const reader = new FileReader()
                 reader.onload = (e) => {
                     component.insertBase64(e.target.result)
@@ -83,8 +120,22 @@ export default {
         },
         uploadToServer(file) {
             const config = this.$options.module.config
+
             const formData = new FormData()
-            formData.append(config.fieldName, file)
+            formData.append(config.upload.fieldName || 'image', file)
+
+            if (typeof config.upload.params === 'object') {
+                Object.keys(config.upload.params).forEach((key) => {
+                    const value = config.upload.params[key]
+                    if (Array.isArray(value)) {
+                        value.forEach((v) => {
+                            formData.append(key, v)
+                        })
+                    } else {
+                        formData.append(key, value)
+                    }
+                })
+            }
 
             const xhr = new XMLHttpRequest()
 
@@ -126,7 +177,12 @@ export default {
                 this.upload.status = 'abort'
             }
 
-            xhr.open('POST', config.server)
+            xhr.open('POST', config.upload.url)
+            if (typeof config.upload.headers === 'object') {
+                Object.keys(config.upload.headers).forEach((k) => {
+                    xhr.setRequestHeader(k, config.upload.headers[k])
+                })
+            }
             xhr.send(formData)
         }
     }

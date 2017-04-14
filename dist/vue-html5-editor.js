@@ -1,7 +1,7 @@
 /**
- * Vue-html5-editor 1.0.4
+ * Vue-html5-editor 1.1.0
  * https://github.com/PeakTai/vue-html5-editor
- * build at Mon Apr 10 2017 15:17:13 GMT+0800 (CST)
+ * build at Thu Apr 13 2017 15:51:01 GMT+0800 (CST)
  */
 
 (function (global, factory) {
@@ -307,7 +307,7 @@ var t=new Array(arguments.length-1);if(arguments.length>1){ for(var n=1;n<argume
 e.exports=window.lrz;}])});
 });
 
-var template$3 = "<div> <div v-show=\"upload.status=='ready'\"> <input type=\"text\" v-model=\"imageUrl\" maxlength=\"255\" :placeholder=\"$parent.locale['please enter a url']\"> <button type=\"button\" @click=\"insertImageUrl\">{{$parent.locale.save}}</button> <input type=\"file\" ref=\"file\" style=\"display: none !important\" @change=\"startUpload\" accept=\"image/png,image/jpeg,image/gif,image/jpg\"> <button type=\"button\" @click=\"pick\">{{$parent.locale.upload}}</button> </div> <div v-if=\"upload.status=='progress'\"> {{$parent.locale.progress}}:{{upload.progressComputable ? $parent.locale.unknown : upload.complete}} </div> <div v-if=\"upload.status=='success'\"> {{$parent.locale[\"please wait\"]}}... </div> <div v-if=\"upload.status=='error'\"> {{$parent.locale.error}}:{{upload.errorMsg}} <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> <div v-if=\"upload.status=='abort'\"> {{$parent.locale.upload}}&nbsp;{{$parent.locale.abort}}, <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> </div> ";
+var template$3 = "<div> <div v-show=\"upload.status=='ready'\"> <input type=\"text\" v-model=\"imageUrl\" maxlength=\"255\" :placeholder=\"$parent.locale['please enter a url']\"> <button type=\"button\" @click=\"insertImageUrl\">{{$parent.locale.save}}</button> <input type=\"file\" ref=\"file\" style=\"display: none !important\" @change=\"process\" accept=\"image/png,image/jpeg,image/gif,image/jpg\"> <button type=\"button\" @click=\"pick\">{{$parent.locale.upload}}</button> </div> <div v-if=\"upload.status=='progress'\"> {{$parent.locale.progress}}:{{upload.progressComputable ? $parent.locale.unknown : upload.complete}} </div> <div v-if=\"upload.status=='success'\"> {{$parent.locale[\"please wait\"]}}... </div> <div v-if=\"upload.status=='error'\"> {{$parent.locale.error}}:{{upload.errorMsg}} <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> <div v-if=\"upload.status=='abort'\"> {{$parent.locale.upload}}&nbsp;{{$parent.locale.abort}}, <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> </div> ";
 
 /**
  * Created by peak on 2017/2/10.
@@ -343,11 +343,52 @@ var dashboard$3 = {
             this.upload.status = 'error';
             this.upload.errorMsg = msg;
         },
-        startUpload: function startUpload() {
+        process: function process() {
             var this$1 = this;
 
             var component = this;
             var config = this.$options.module.config;
+            // compatibility with older format
+            // {
+            //     server: null,
+            //     fieldName: 'image',
+            //     compress: true,
+            //     width: 1600,
+            //     height: 1600,
+            //     quality: 80
+            // }
+            // ----------- divider ----------------
+            // {
+            //     upload: {
+            //         url: null,
+            //         headers: {},
+            //         params: {},
+            //         fieldName: {}
+            //     },
+            //     compress: {
+            //         width: 1600,
+            //         height: 1600,
+            //         quality: 80
+            //     },
+            // }
+
+            if (!config.upload && typeof config.server === 'string') {
+                config.upload = {url: config.server};
+            }
+            if (config.upload && !config.upload.url) {
+                config.upload = null;
+            }
+            if (config.upload && typeof config.fieldName === 'string') {
+                config.upload.fieldName = config.fieldName;
+            }
+
+            if (typeof config.compress === 'boolean') {
+                config.compress = {
+                    width: config.width,
+                    height: config.height,
+                    quality: config.quality
+                };
+            }
 
             var file = this.$refs.file.files[0];
             if (file.size > config.sizeLimit) {
@@ -356,15 +397,11 @@ var dashboard$3 = {
             }
             this.$refs.file.value = null;
 
-            // 需要压缩
             if (config.compress) {
-                lrz_all_bundle(file, {
-                    width: config.width,
-                    height: config.height,
-                    quality: config.quality,
-                    fieldName: config.fieldName
-                }).then(function (rst) {
-                    if (config.server) {
+                config.compress.fieldName = config.upload && config.upload.fieldName
+                    ? config.upload.fieldName : 'image';
+                lrz_all_bundle(file, config.compress).then(function (rst) {
+                    if (config.upload) {
                         component.uploadToServer(rst.file);
                     } else {
                         component.insertBase64(rst.base64);
@@ -376,7 +413,7 @@ var dashboard$3 = {
             }
             // 不需要压缩
             // base64
-            if (!config.server) {
+            if (!config.upload) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
                     component.insertBase64(e.target.result);
@@ -394,8 +431,22 @@ var dashboard$3 = {
             var this$1 = this;
 
             var config = this.$options.module.config;
+
             var formData = new FormData();
-            formData.append(config.fieldName, file);
+            formData.append(config.upload.fieldName || 'image', file);
+
+            if (typeof config.upload.params === 'object') {
+                Object.keys(config.upload.params).forEach(function (key) {
+                    var value = config.upload.params[key];
+                    if (Array.isArray(value)) {
+                        value.forEach(function (v) {
+                            formData.append(key, v);
+                        });
+                    } else {
+                        formData.append(key, value);
+                    }
+                });
+            }
 
             var xhr = new XMLHttpRequest();
 
@@ -437,7 +488,12 @@ var dashboard$3 = {
                 this$1.upload.status = 'abort';
             };
 
-            xhr.open('POST', config.server);
+            xhr.open('POST', config.upload.url);
+            if (typeof config.upload.headers === 'object') {
+                Object.keys(config.upload.headers).forEach(function (k) {
+                    xhr.setRequestHeader(k, config.upload.headers[k]);
+                });
+            }
             xhr.send(formData);
         }
     }
@@ -452,13 +508,24 @@ var image = {
     icon: 'fa fa-file-image-o',
     i18n: 'image',
     config: {
-        server: null,
-        fieldName: 'image',
+        // server: null,
+        // fieldName: 'image',
+        // compress: true,
+        // width: 1600,
+        // height: 1600,
+        // quality: 80,
         sizeLimit: 512 * 1024,// 512k
-        compress: true,
-        width: 1600,
-        height: 1600,
-        quality: 80,
+        // upload: {
+        //     url: null,
+        //     headers: {},
+        //     params: {},
+        //     fieldName: {}
+        // },
+        compress: {
+            width: 1600,
+            height: 1600,
+            quality: 80
+        },
         uploadHandler: function uploadHandler(responseText){
             var json = JSON.parse(responseText);
             return json.ok ? json.data : null
@@ -476,7 +543,7 @@ var dashboard$4 = {
     template: template$4,
     data: function data(){
         return {
-            version: "1.0.4"
+            version: "1.1.0"
         }
     }
 };
@@ -1096,6 +1163,7 @@ RangeHandler.prototype.execCommand = function execCommand (command, arg) {
             break
         }
         default: {
+            document.execCommand(command, false, arg);
             break
         }
     }
