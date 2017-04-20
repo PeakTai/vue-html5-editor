@@ -151,7 +151,7 @@ export default {
             }
 
             xhr.onload = () => {
-                if (xhr.status !== 200) {
+                if (xhr.status >= 300) {
                     this.setUploadError(`request error,code ${xhr.status}`)
                     return
                 }
