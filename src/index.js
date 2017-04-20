@@ -44,10 +44,12 @@ class VueHtml5Editor {
         if (Array.isArray(options.visibleModules)) {
             modules = (() => {
                 const arr = []
-                modules.forEach((module) => {
-                    if (options.visibleModules.includes(module.name)) {
-                        arr.push(module)
-                    }
+                options.visibleModules.forEach((name) => {
+                    modules.forEach((module) => {
+                        if (module.name === name) {
+                            arr.push(module)
+                        }
+                    })
                 })
                 return arr
             })()

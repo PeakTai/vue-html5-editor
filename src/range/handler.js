@@ -95,37 +95,6 @@ export default class RangeHandler {
     execCommand(command, arg) {
         switch (command) {
 
-            case Command.JUSTIFY_LEFT: {
-                document.execCommand(Command.JUSTIFY_LEFT, false, arg)
-                break
-            }
-
-            case Command.JUSTIFY_RIGHT: {
-                document.execCommand(Command.JUSTIFY_RIGHT, false, arg)
-                break
-            }
-
-            case Command.JUSTIFY_CENTER: {
-                document.execCommand(Command.JUSTIFY_CENTER, false, arg)
-                break
-            }
-
-            case Command.FORE_COLOR: {
-                document.execCommand(Command.FORE_COLOR, false, arg)
-                break
-            }
-            case Command.BACK_COLOR: {
-                document.execCommand(Command.BACK_COLOR, false, arg)
-                break
-            }
-            case Command.REMOVE_FORMAT: {
-                document.execCommand(Command.REMOVE_FORMAT, false, arg)
-                break
-            }
-            case Command.FONT_NAME: {
-                document.execCommand(Command.FONT_NAME, false, arg)
-                break
-            }
             case Command.FONT_SIZE: {
                 // 重新实现，改为直接修改样式
                 const textNodes = this.getAllTextNodesInRange()
@@ -237,26 +206,6 @@ export default class RangeHandler {
                 })
                 break
             }
-            case Command.INSERT_HORIZONTAL_RULE: {
-                document.execCommand(Command.INSERT_HORIZONTAL_RULE, false)
-                break
-            }
-            case Command.INSERT_IMAGE: {
-                document.execCommand(Command.INSERT_IMAGE, false, arg)
-                break
-            }
-            case Command.CREATE_LINK: {
-                document.execCommand(Command.CREATE_LINK, false, arg)
-                break
-            }
-            case Command.INSERT_ORDERED_LIST: {
-                document.execCommand(Command.INSERT_ORDERED_LIST, false, arg)
-                break
-            }
-            case Command.INSERT_UNORDERED_LIST: {
-                document.execCommand(Command.INSERT_UNORDERED_LIST, false, arg)
-                break
-            }
             case Command.INSERT_HTML: {
                 if (document.execCommand(Command.INSERT_HTML, false, arg)) {
                     break
@@ -272,38 +221,6 @@ export default class RangeHandler {
                 }
                 this.range.deleteContents()
                 this.range.insertNode(fragment)
-                break
-            }
-            case Command.BOLD: {
-                document.execCommand(Command.BOLD, false, arg)
-                break
-            }
-            case Command.ITALIC: {
-                document.execCommand(Command.ITALIC, false)
-                break
-            }
-            case Command.UNDERLINE: {
-                document.execCommand(Command.UNDERLINE, false)
-                break
-            }
-            case Command.STRIKE_THROUGH: {
-                document.execCommand(Command.STRIKE_THROUGH, false)
-                break
-            }
-            case Command.SUBSCRIPT: {
-                document.execCommand(Command.SUBSCRIPT, false)
-                break
-            }
-            case Command.SUPERSCRIPT: {
-                document.execCommand(Command.SUPERSCRIPT, false)
-                break
-            }
-            case Command.UNDO: {
-                document.execCommand(Command.UNDO, false)
-                break
-            }
-            case Command.UNLINK: {
-                document.execCommand(Command.UNLINK, false)
                 break
             }
             default: {
