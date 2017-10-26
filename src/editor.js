@@ -44,6 +44,7 @@ export default {
             if (val !== content) {
                 this.$refs.content.innerHTML = val
             }
+            this.$emit('update:content', val)
         },
         fullScreen(val){
             const component = this
