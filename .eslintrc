@@ -52,6 +52,8 @@
       "error",
       "as-needed"
     ],
+    "no-underscore-dangle": "off",
+    "consistent-return": "off",
     "import/no-unresolved": "off",
     "import/extensions": [
       "error",

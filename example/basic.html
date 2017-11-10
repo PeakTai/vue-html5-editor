@@ -37,7 +37,10 @@
             compress: true,
             width: 500,
             height: 500,
-            quality: 80
+            quality: 80,
+            beforeUpload () {
+                return new Promise(resolve => resolve('http://pic4.nipic.com/20091217/3885730_124701000519_2.jpg'))
+            }
         }
     })
 

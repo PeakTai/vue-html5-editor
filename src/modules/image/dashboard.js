@@ -37,7 +37,6 @@ export default {
             this.upload.errorMsg = msg
         },
         process() {
-            const component = this
             const config = this.$options.module.config
             // compatibility with older format
             // {
@@ -88,32 +87,54 @@ export default {
             }
             this.$refs.file.value = null
 
-            if (config.compress) {
-                config.compress.fieldName = config.upload && config.upload.fieldName
-                    ? config.upload.fieldName : 'image'
-                lrz(file, config.compress).then((rst) => {
-                    if (config.upload) {
-                        component.uploadToServer(rst.file)
+            function gennerRst() {
+                const res = {file}
+                const base64 = !config.upload
+                return new Promise((resolve, reject) => {
+                    if (base64) {
+                        const reader = new FileReader()
+                        reader.onload = (e) => {
+                            res.base64 = e.target.result
+                            resolve(res)
+                        }
+                        reader.onerror = (e) => {
+                            reject(e)
+                        }
+                        reader.readAsDataURL(file)
                     } else {
-                        component.insertBase64(rst.base64)
+                        resolve(res)
                     }
-                }).catch((err) => {
-                    this.setUploadError(err.toString())
                 })
-                return
             }
-            // 不需要压缩
-            // base64
-            if (!config.upload) {
-                const reader = new FileReader()
-                reader.onload = (e) => {
-                    component.insertBase64(e.target.result)
-                }
-                reader.readAsDataURL(file)
-                return
-            }
-            // 上传服务器
-            component.uploadToServer(file)
+
+            const rstPromise = config.compress ? lrz(file, config.compress) : gennerRst()
+            let _rst = null
+            rstPromise
+                .then((rst) => {
+                    _rst = rst
+                    // 配置beforeUpload钩子允许业务程序处理文件，或做一些上传前的准备
+                    if (config.beforeUpload && typeof config.beforeUpload === 'function') {
+                        return config.beforeUpload.call(null, rst.file)
+                    }
+                })
+                .then((res) => {
+                    // 如果钩子返回false，则什么都不做
+                    if (typeof res === 'boolean' && res === false) {
+                        return
+                    }
+
+                    // 如果钩子返回字符串，则当作是图片URL
+                    if (typeof res === 'string') {
+                        return this.$parent.execCommand(Command.INSERT_IMAGE, res)
+                    }
+
+                    if (config.upload) {
+                        this.uploadToServer(_rst.file)
+                    } else {
+                        this.insertBase64(_rst.base64)
+                    }
+                })
+                .catch(this.setUploadError)
         },
         insertBase64(data) {
             this.$parent.execCommand(Command.INSERT_IMAGE, data)

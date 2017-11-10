@@ -1,7 +1,7 @@
 /**
  * Vue-html5-editor 1.1.0
  * https://github.com/PeakTai/vue-html5-editor
- * build at Thu Apr 13 2017 15:51:01 GMT+0800 (CST)
+ * build at Fri Nov 10 2017 17:10:24 GMT+0800 (CST)
  */
 
 (function (global, factory) {
@@ -18,12 +18,13 @@ function __$styleInject(css, returnValue) {
   var head = document.head || document.getElementsByTagName('head')[0];
   var style = document.createElement('style');
   style.type = 'text/css';
+  head.appendChild(style);
+  
   if (style.styleSheet){
     style.styleSheet.cssText = css;
   } else {
     style.appendChild(document.createTextNode(css));
   }
-  head.appendChild(style);
   return returnValue;
 }
 
@@ -346,7 +347,6 @@ var dashboard$3 = {
         process: function process() {
             var this$1 = this;
 
-            var component = this;
             var config = this.$options.module.config;
             // compatibility with older format
             // {
@@ -397,32 +397,54 @@ var dashboard$3 = {
             }
             this.$refs.file.value = null;
 
-            if (config.compress) {
-                config.compress.fieldName = config.upload && config.upload.fieldName
-                    ? config.upload.fieldName : 'image';
-                lrz_all_bundle(file, config.compress).then(function (rst) {
-                    if (config.upload) {
-                        component.uploadToServer(rst.file);
+            function gennerRst() {
+                var res = {file: file};
+                var base64 = !config.upload;
+                return new Promise(function (resolve, reject) {
+                    if (base64) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            res.base64 = e.target.result;
+                            resolve(res);
+                        };
+                        reader.onerror = function (e) {
+                            reject(e);
+                        };
+                        reader.readAsDataURL(file);
                     } else {
-                        component.insertBase64(rst.base64);
+                        resolve(res);
                     }
-                }).catch(function (err) {
-                    this$1.setUploadError(err.toString());
-                });
-                return
+                })
             }
-            // 不需要压缩
-            // base64
-            if (!config.upload) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    component.insertBase64(e.target.result);
-                };
-                reader.readAsDataURL(file);
-                return
-            }
-            // 上传服务器
-            component.uploadToServer(file);
+
+            var rstPromise = config.compress ? lrz_all_bundle(file, config.compress) : gennerRst();
+            var _rst = null;
+            rstPromise
+                .then(function (rst) {
+                    _rst = rst;
+                    // 配置beforeUpload钩子允许业务程序处理文件，或做一些上传前的准备
+                    if (config.beforeUpload && typeof config.beforeUpload === 'function') {
+                        return config.beforeUpload.call(null, rst.file)
+                    }
+                })
+                .then(function (res) {
+                    // 如果钩子返回false，则什么都不做
+                    if (typeof res === 'boolean' && res === false) {
+                        return
+                    }
+
+                    // 如果钩子返回字符串，则当作是图片URL
+                    if (typeof res === 'string') {
+                        return this$1.$parent.execCommand(Command.INSERT_IMAGE, res)
+                    }
+
+                    if (config.upload) {
+                        this$1.uploadToServer(_rst.file);
+                    } else {
+                        this$1.insertBase64(_rst.base64);
+                    }
+                })
+                .catch(this.setUploadError);
         },
         insertBase64: function insertBase64(data) {
             this.$parent.execCommand(Command.INSERT_IMAGE, data);
@@ -462,7 +484,7 @@ var dashboard$3 = {
             };
 
             xhr.onload = function () {
-                if (xhr.status !== 200) {
+                if (xhr.status >= 300) {
                     this$1.setUploadError(("request error,code " + (xhr.status)));
                     return
                 }
@@ -1169,7 +1191,7 @@ RangeHandler.prototype.execCommand = function execCommand (command, arg) {
     }
 };
 
-__$styleInject(".vue-html5-editor,.vue-html5-editor *{box-sizing:border-box}.vue-html5-editor{font-size:14px;line-height:1.5;background-color:#fff;color:#333;border:1px solid #ddd;text-align:left;border-radius:5px;overflow:hidden}.vue-html5-editor.full-screen{position:fixed!important;top:0!important;left:0!important;bottom:0!important;right:0!important;border-radius:0}.vue-html5-editor>.toolbar{position:relative;background-color:inherit}.vue-html5-editor>.toolbar>ul{list-style:none;padding:0;margin:0;border-bottom:1px solid #ddd}.vue-html5-editor>.toolbar>ul>li{display:inline-block;cursor:pointer;text-align:center;line-height:36px;padding:0 10px}.vue-html5-editor>.toolbar>ul>li .icon{height:16px;width:16px;display:inline-block;vertical-align:middle}.vue-html5-editor>.toolbar>.dashboard{background-color:inherit;border-bottom:1px solid #ddd;padding:10px;position:absolute;top:100%;left:0;right:0;overflow:auto}.vue-html5-editor>.toolbar>.dashboard input[type=text],.vue-html5-editor>.toolbar>.dashboard input[type=number],.vue-html5-editor>.toolbar>.dashboard select{padding:6px 12px;color:inherit;background-color:transparent;border:1px solid #ddd;border-radius:5px}.vue-html5-editor>.toolbar>.dashboard input[type=text]:hover,.vue-html5-editor>.toolbar>.dashboard input[type=number]:hover,.vue-html5-editor>.toolbar>.dashboard select:hover{border-color:#bebebe}.vue-html5-editor>.toolbar>.dashboard input[type=text][disabled],.vue-html5-editor>.toolbar>.dashboard input[type=text][readonly],.vue-html5-editor>.toolbar>.dashboard input[type=number][disabled],.vue-html5-editor>.toolbar>.dashboard input[type=number][readonly],.vue-html5-editor>.toolbar>.dashboard select[disabled],.vue-html5-editor>.toolbar>.dashboard select[readonly]{background-color:#eee;opacity:1}.vue-html5-editor>.toolbar>.dashboard input[type=text][disabled],.vue-html5-editor>.toolbar>.dashboard input[type=number][disabled],.vue-html5-editor>.toolbar>.dashboard select[disabled]{cursor:not-allowed}.vue-html5-editor>.toolbar>.dashboard button{color:inherit;background-color:inherit;padding:6px 12px;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border:1px solid #ddd;border-radius:5px;margin-right:4px;margin-bottom:4px}.vue-html5-editor>.toolbar>.dashboard button:hover{border-color:#bebebe}.vue-html5-editor>.toolbar>.dashboard button[disabled]{cursor:not-allowed;opacity:.68}.vue-html5-editor>.toolbar>.dashboard button:last-child{margin-right:0}.vue-html5-editor>.toolbar>.dashboard label{font-weight:bolder}.vue-html5-editor>.content{overflow:auto;padding:10px}.vue-html5-editor>.content:focus{outline:0}",undefined);
+__$styleInject(".vue-html5-editor{font-size:14px;line-height:1.5;background-color:#fff;color:#333;border:1px solid #ddd;text-align:left;border-radius:5px;overflow:hidden;box-sizing:border-box}.vue-html5-editor *{box-sizing:border-box}.vue-html5-editor.full-screen{position:fixed!important;top:0!important;left:0!important;bottom:0!important;right:0!important;border-radius:0}.vue-html5-editor>.toolbar{position:relative;background-color:inherit}.vue-html5-editor>.toolbar>ul{list-style:none;padding:0;margin:0;border-bottom:1px solid #ddd}.vue-html5-editor>.toolbar>ul>li{display:inline-block;cursor:pointer;text-align:center;line-height:36px;padding:0 10px}.vue-html5-editor>.toolbar>ul>li .icon{height:16px;width:16px;display:inline-block;vertical-align:middle}.vue-html5-editor>.toolbar>.dashboard{background-color:inherit;border-bottom:1px solid #ddd;padding:10px;position:absolute;top:100%;left:0;right:0;overflow:auto}.vue-html5-editor>.toolbar>.dashboard input[type=number],.vue-html5-editor>.toolbar>.dashboard select{padding:6px 12px;color:inherit;background-color:transparent;border:1px solid #ddd;border-radius:5px}.vue-html5-editor>.toolbar>.dashboard input[type=number]:hover,.vue-html5-editor>.toolbar>.dashboard input[type=text]:hover,.vue-html5-editor>.toolbar>.dashboard select:hover{border-color:#bebebe}.vue-html5-editor>.toolbar>.dashboard input[type=number][disabled],.vue-html5-editor>.toolbar>.dashboard input[type=number][readonly],.vue-html5-editor>.toolbar>.dashboard input[type=text][disabled],.vue-html5-editor>.toolbar>.dashboard input[type=text][readonly],.vue-html5-editor>.toolbar>.dashboard select[disabled],.vue-html5-editor>.toolbar>.dashboard select[readonly]{background-color:#eee;opacity:1}.vue-html5-editor>.toolbar>.dashboard input[type=number][disabled],.vue-html5-editor>.toolbar>.dashboard input[type=text][disabled],.vue-html5-editor>.toolbar>.dashboard select[disabled]{cursor:not-allowed}.vue-html5-editor>.toolbar>.dashboard button{color:inherit;background-color:inherit;padding:6px 12px;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border:1px solid #ddd;border-radius:5px;margin-right:4px;margin-bottom:4px}.vue-html5-editor>.toolbar>.dashboard button:hover{border-color:#bebebe}.vue-html5-editor>.toolbar>.dashboard button[disabled]{cursor:not-allowed;opacity:.68}.vue-html5-editor>.toolbar>.dashboard button:last-child{margin-right:0}.vue-html5-editor>.toolbar>.dashboard label{font-weight:bolder}.vue-html5-editor>.content{overflow:auto;padding:10px}.vue-html5-editor>.content:focus{outline:0}@media (max-width:767px){.vue-html5-editor{margin-bottom:5px;width:100%!important}button:last-child,input[type=number]:last-child,input[type=text]:last-child,label:last-child,select:last-child{margin-bottom:0}}button:last-child,input:last-child,label:last-child,select:last-child{margin-right:0}",undefined);
 
 var template$9 = "<div class=\"vue-html5-editor\" :class=\"{'full-screen':fullScreen}\" :style=\"{'z-index':zIndex}\"> <div class=\"toolbar\" :style=\"{'z-index':zIndex+1}\" ref=\"toolbar\"> <ul> <template v-for=\"module in modules\"> <li :title=\"locale[module.i18n]\" @click=\"activeModule(module)\"> <span class=\"icon\" :class=\"module.icon\"></span> <template v-if=\"showModuleName === undefined ? defaultShowModuleName : showModuleName\"> &nbsp;{{locale[module.i18n]}} </template> </li> </template> </ul> <div class=\"dashboard\" v-show=\"dashboard\" ref=\"dashboard\"> <keep-alive> <div v-show=\"dashboard\" :is=\"dashboard\"></div> </keep-alive> </div> </div> <div class=\"content\" ref=\"content\" :style=\"contentStyle\" contenteditable @click=\"toggleDashboard(dashboard)\"> </div> </div>";
 
@@ -1216,6 +1238,7 @@ var editor = {
             if (val !== content) {
                 this.$refs.content.innerHTML = val;
             }
+            this.$emit('update:content', val);
         },
         fullScreen: function fullScreen(val){
             var component = this;
