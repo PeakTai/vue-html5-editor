@@ -1,6 +1,7 @@
 export default {
     align: '对齐方式',
     image: '图片',
+    video: '视频',
     list: '列表',
     link: '链接',
     unlink: '去除链接',
@@ -13,6 +14,7 @@ export default {
     color: '颜色',
     'please enter a url': '请输入地址',
     'create link': '创建链接',
+    'Miss required option': '缺少必要的配置信息。',
     bold: '加粗',
     italic: '倾斜',
     underline: '下划线',

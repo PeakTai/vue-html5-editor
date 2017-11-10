@@ -1,6 +1,7 @@
 export default {
     align: 'align',
     image: 'image',
+    video: 'video',
     list: 'list',
     link: 'link',
     unlink: 'unlink',
@@ -13,6 +14,7 @@ export default {
     color: 'color',
     'please enter a url': 'please enter a url',
     'create link': 'create link',
+    'Miss required option': 'Miss required option.',
     bold: 'bold',
     italic: 'italic',
     underline: 'underline',

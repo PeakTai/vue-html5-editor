@@ -1,0 +1,32 @@
+<div>
+
+    <div v-show="upload.status=='ready'">
+
+        <input type="text" v-model="videoUrl" maxlength="255" :placeholder="$parent.locale['please enter a url']">
+        <button type="button" @click="insertVideoUrl">{{$parent.locale.save}}</button>
+
+        <input type="file" ref="file" style="display: none !important;" @change="process"
+               accept="image/png,image/jpeg,image/gif,image/jpg">
+        <button type="button" @click="pick">{{$parent.locale.upload}}</button>
+    </div>
+
+    <div v-if="upload.status=='progress'">
+        {{$parent.locale.progress}}:{{upload.progressComputable ? $parent.locale.unknown : upload.complete}}
+    </div>
+
+    <div v-if="upload.status=='success'">
+        {{$parent.locale["please wait"]}}...
+    </div>
+
+    <div v-if="upload.status=='error'">
+        {{$parent.locale.error}}:{{upload.errorMsg}}
+        <button type="button" @click="reset">{{$parent.locale.reset}}</button>
+    </div>
+
+    <div v-if="upload.status=='abort'">
+        {{$parent.locale.upload}}&nbsp;{{$parent.locale.abort}},
+        <button type="button" @click="reset">{{$parent.locale.reset}}</button>
+    </div>
+
+</div>
+

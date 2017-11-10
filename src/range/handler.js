@@ -87,6 +87,16 @@ export default class RangeHandler {
         return textNodes
     }
 
+    getVidelElement(url) {
+        const containerEl = document.createElement('div')
+        const el = document.createElement('video')
+        el.src = url
+        el.style.width = '100%'
+        el.style.height = 'auto'
+        containerEl.appendChild(el)
+        return containerEl
+    }
+
     /**
      * execute edit command
      * @param {String} command
@@ -243,6 +253,11 @@ export default class RangeHandler {
             }
             case Command.INSERT_IMAGE: {
                 document.execCommand(Command.INSERT_IMAGE, false, arg)
+                break
+            }
+            case Command.INSERT_VIDEO: {
+                const videoEl = this.getVidelElement(arg)
+                this.range.insertNode(videoEl)
                 break
             }
             case Command.CREATE_LINK: {

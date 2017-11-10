@@ -1,15 +1,14 @@
-import lrz from 'lrz'
 import template from './dashboard.html'
 import Command from '../../range/command'
 
 /**
- * Created by peak on 2017/2/10.
+ * Created by liuJD on 2017/11/10.
  */
 export default {
     template,
     data() {
         return {
-            imageUrl: '',
+            videoUrl: '',
             upload: {
                 status: 'ready', // progress,success,error,abort
                 errorMsg: null,
@@ -22,12 +21,12 @@ export default {
         reset(){
             this.upload.status = 'ready'
         },
-        insertImageUrl() {
-            if (!this.imageUrl) {
+        insertVideoUrl() {
+            if (!this.videoUrl) {
                 return
             }
-            this.$parent.execCommand(Command.INSERT_IMAGE, this.imageUrl)
-            this.imageUrl = null
+            this.$parent.execCommand(Command.INSERT_VIDEO, this.videoUrl)
+            this.videoUrl = null
         },
         pick() {
             this.$refs.file.click()
@@ -54,14 +53,11 @@ export default {
             //         headers: {},
             //         params: {},
             //         fieldName: {}
-            //     },
-            //     compress: {
-            //         width: 1600,
-            //         height: 1600,
-            //         quality: 80
-            //     },
+            //     }
             // }
-
+            if (!config.upload && !config.beforeUpload) {
+                return this.setUploadError(this.$parent.locale['Miss required option'])
+            }
             if (!config.upload && typeof config.server === 'string') {
                 config.upload = {url: config.server}
             }
@@ -72,14 +68,6 @@ export default {
                 config.upload.fieldName = config.fieldName
             }
 
-            if (typeof config.compress === 'boolean') {
-                config.compress = {
-                    width: config.width,
-                    height: config.height,
-                    quality: config.quality
-                }
-            }
-
             const file = this.$refs.file.files[0]
             if (file.size > config.sizeLimit) {
                 this.setUploadError(this.$parent.locale['exceed size limit'])
@@ -87,63 +75,30 @@ export default {
             }
             this.$refs.file.value = null
 
-            function gennerRst() {
-                const res = {file}
-                const base64 = !config.upload
-                return new Promise((resolve, reject) => {
-                    if (base64) {
-                        const reader = new FileReader()
-                        reader.onload = (e) => {
-                            res.base64 = e.target.result
-                            resolve(res)
-                        }
-                        reader.onerror = (e) => {
-                            reject(e)
-                        }
-                        reader.readAsDataURL(file)
-                    } else {
-                        resolve(res)
-                    }
-                })
-            }
-
-            const rstPromise = config.compress ? lrz(file, config.compress) : gennerRst()
-            let _rst = null
-            rstPromise
-                .then((rst) => {
-                    _rst = rst
-                    // 配置beforeUpload钩子允许业务程序处理文件，或做一些上传前的准备
-                    if (config.beforeUpload && typeof config.beforeUpload === 'function') {
-                        return config.beforeUpload.call(null, rst.file)
-                    }
-                })
+            const doPromise = Promise.resolve(
+                config.beforeUpload && typeof config.beforeUpload === 'function'
+                    ? config.beforeUpload.call(null, file)
+                    : null
+            )
+            doPromise
                 .then((res) => {
-                    // 如果钩子返回false，则什么都不做
                     if (typeof res === 'boolean' && res === false) {
                         return
                     }
 
                     // 如果钩子返回字符串，则当作是图片URL
                     if (typeof res === 'string') {
-                        return this.$parent.execCommand(Command.INSERT_IMAGE, res)
+                        return this.$parent.execCommand(Command.INSERT_VIDEO, res)
                     }
 
-                    if (config.upload) {
-                        this.uploadToServer(_rst.file)
-                    } else {
-                        this.insertBase64(_rst.base64)
-                    }
+                    return config.upload && this.uploadToServer(file)
                 })
-                .catch(this.setUploadError)
-        },
-        insertBase64(data) {
-            this.$parent.execCommand(Command.INSERT_IMAGE, data)
         },
         uploadToServer(file) {
             const config = this.$options.module.config
 
             const formData = new FormData()
-            formData.append(config.upload.fieldName || 'image', file)
+            formData.append(config.upload.fieldName || 'video', file)
 
             if (typeof config.upload.params === 'object') {
                 Object.keys(config.upload.params).forEach((key) => {
@@ -180,7 +135,7 @@ export default {
                 try {
                     const url = config.uploadHandler(xhr.responseText)
                     if (url) {
-                        this.$parent.execCommand(Command.INSERT_IMAGE, url)
+                        this.$parent.execCommand(Command.INSERT_VIDEO, url)
                     }
                 } catch (err) {
                     this.setUploadError(err.toString())

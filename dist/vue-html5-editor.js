@@ -1,7 +1,7 @@
 /**
  * Vue-html5-editor 1.1.0
  * https://github.com/PeakTai/vue-html5-editor
- * build at Fri Nov 10 2017 17:10:24 GMT+0800 (CST)
+ * build at Fri Nov 10 2017 18:50:18 GMT+0800 (CST)
  */
 
 (function (global, factory) {
@@ -341,8 +341,10 @@ var dashboard$3 = {
             this.$refs.file.click();
         },
         setUploadError: function setUploadError(msg){
+            if ( msg === void 0 ) msg = '';
+
             this.upload.status = 'error';
-            this.upload.errorMsg = msg;
+            this.upload.errorMsg = msg && msg.toString();
         },
         process: function process() {
             var this$1 = this;
@@ -556,13 +558,214 @@ var image = {
     dashboard: dashboard$3
 };
 
-var template$4 = "<div> <h3 style=\"text-align: center\">Vue-html5-editor&nbsp;{{version}}</h3> <p style=\"text-align: center\"> repository: <a href=\"https://github.com/PeakTai/vue-html5-editor\" target=\"_blank\"> https://github.com/PeakTai/vue-html5-editor </a> </p> </div> ";
+var template$4 = "<div> <div v-show=\"upload.status=='ready'\"> <input type=\"text\" v-model=\"videoUrl\" maxlength=\"255\" :placeholder=\"$parent.locale['please enter a url']\"> <button type=\"button\" @click=\"insertVideoUrl\">{{$parent.locale.save}}</button> <input type=\"file\" ref=\"file\" style=\"display: none !important\" @change=\"process\" accept=\"image/png,image/jpeg,image/gif,image/jpg\"> <button type=\"button\" @click=\"pick\">{{$parent.locale.upload}}</button> </div> <div v-if=\"upload.status=='progress'\"> {{$parent.locale.progress}}:{{upload.progressComputable ? $parent.locale.unknown : upload.complete}} </div> <div v-if=\"upload.status=='success'\"> {{$parent.locale[\"please wait\"]}}... </div> <div v-if=\"upload.status=='error'\"> {{$parent.locale.error}}:{{upload.errorMsg}} <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> <div v-if=\"upload.status=='abort'\"> {{$parent.locale.upload}}&nbsp;{{$parent.locale.abort}}, <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> </div> ";
+
+/**
+ * Created by liuJD on 2017/11/10.
+ */
+var dashboard$4 = {
+    template: template$4,
+    data: function data() {
+        return {
+            videoUrl: '',
+            upload: {
+                status: 'ready', // progress,success,error,abort
+                errorMsg: null,
+                progressComputable: false,
+                complete: 0
+            }
+        }
+    },
+    methods: {
+        reset: function reset(){
+            this.upload.status = 'ready';
+        },
+        insertVideoUrl: function insertVideoUrl() {
+            if (!this.videoUrl) {
+                return
+            }
+            this.$parent.execCommand(Command.INSERT_VIDEO, this.videoUrl);
+            this.videoUrl = null;
+        },
+        pick: function pick() {
+            this.$refs.file.click();
+        },
+        setUploadError: function setUploadError(msg){
+            if ( msg === void 0 ) msg = '';
+
+            this.upload.status = 'error';
+            this.upload.errorMsg = msg && msg.toString();
+        },
+        process: function process() {
+            var this$1 = this;
+
+            var config = this.$options.module.config;
+            // compatibility with older format
+            // {
+            //     server: null,
+            //     fieldName: 'image',
+            //     compress: true,
+            //     width: 1600,
+            //     height: 1600,
+            //     quality: 80
+            // }
+            // ----------- divider ----------------
+            // {
+            //     upload: {
+            //         url: null,
+            //         headers: {},
+            //         params: {},
+            //         fieldName: {}
+            //     }
+            // }
+            if (!config.upload && !config.beforeUpload) {
+                return this.setUploadError(this.$parent.locale['Miss required option'])
+            }
+            if (!config.upload && typeof config.server === 'string') {
+                config.upload = {url: config.server};
+            }
+            if (config.upload && !config.upload.url) {
+                config.upload = null;
+            }
+            if (config.upload && typeof config.fieldName === 'string') {
+                config.upload.fieldName = config.fieldName;
+            }
+
+            var file = this.$refs.file.files[0];
+            if (file.size > config.sizeLimit) {
+                this.setUploadError(this.$parent.locale['exceed size limit']);
+                return
+            }
+            this.$refs.file.value = null;
+
+            var doPromise = Promise.resolve(
+                config.beforeUpload && typeof config.beforeUpload === 'function'
+                    ? config.beforeUpload.call(null, file)
+                    : null
+            );
+            doPromise
+                .then(function (res) {
+                    if (typeof res === 'boolean' && res === false) {
+                        return
+                    }
+
+                    // 如果钩子返回字符串，则当作是图片URL
+                    if (typeof res === 'string') {
+                        return this$1.$parent.execCommand(Command.INSERT_VIDEO, res)
+                    }
+
+                    return config.upload && this$1.uploadToServer(file)
+                });
+        },
+        uploadToServer: function uploadToServer(file) {
+            var this$1 = this;
+
+            var config = this.$options.module.config;
+
+            var formData = new FormData();
+            formData.append(config.upload.fieldName || 'video', file);
+
+            if (typeof config.upload.params === 'object') {
+                Object.keys(config.upload.params).forEach(function (key) {
+                    var value = config.upload.params[key];
+                    if (Array.isArray(value)) {
+                        value.forEach(function (v) {
+                            formData.append(key, v);
+                        });
+                    } else {
+                        formData.append(key, value);
+                    }
+                });
+            }
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.onprogress = function (e) {
+                this$1.upload.status = 'progress';
+                if (e.lengthComputable) {
+                    this$1.upload.progressComputable = true;
+                    var percentComplete = e.loaded / e.total;
+                    this$1.upload.complete = (percentComplete * 100).toFixed(2);
+                } else {
+                    this$1.upload.progressComputable = false;
+                }
+            };
+
+            xhr.onload = function () {
+                if (xhr.status >= 300) {
+                    this$1.setUploadError(("request error,code " + (xhr.status)));
+                    return
+                }
+
+                try {
+                    var url = config.uploadHandler(xhr.responseText);
+                    if (url) {
+                        this$1.$parent.execCommand(Command.INSERT_VIDEO, url);
+                    }
+                } catch (err) {
+                    this$1.setUploadError(err.toString());
+                } finally {
+                    this$1.upload.status = 'ready';
+                }
+            };
+
+            xhr.onerror = function () {
+                // find network info in brower tools
+                this$1.setUploadError('request error');
+            };
+
+            xhr.onabort = function () {
+                this$1.upload.status = 'abort';
+            };
+
+            xhr.open('POST', config.upload.url);
+            if (typeof config.upload.headers === 'object') {
+                Object.keys(config.upload.headers).forEach(function (k) {
+                    xhr.setRequestHeader(k, config.upload.headers[k]);
+                });
+            }
+            xhr.send(formData);
+        }
+    }
+};
+
+/**
+ * insert video
+ * Created by liuJD on 17/11/10.
+ */
+var video = {
+    name: 'video',
+    icon: 'fa fa-file-video-o',
+    i18n: 'video',
+    config: {
+        // server: null,
+        // fieldName: 'video',
+        // compress: true,
+        // width: 1600,
+        // height: 1600,
+        // quality: 80,
+        sizeLimit: 512 * 1024,// 512k
+        // upload: {
+        //     url: null,
+        //     headers: {},
+        //     params: {},
+        //     fieldName: {}
+        // },
+        uploadHandler: function uploadHandler(responseText){
+            var json = JSON.parse(responseText);
+            return json.ok ? json.data : null
+        }
+    },
+    dashboard: dashboard$4
+};
+
+var template$5 = "<div> <h3 style=\"text-align: center\">Vue-html5-editor&nbsp;{{version}}</h3> <p style=\"text-align: center\"> repository: <a href=\"https://github.com/PeakTai/vue-html5-editor\" target=\"_blank\"> https://github.com/PeakTai/vue-html5-editor </a> </p> </div> ";
 
 /**
  * Created by peak on 2017/2/10.
  */
-var dashboard$4 = {
-    template: template$4,
+var dashboard$5 = {
+    template: template$5,
     data: function data(){
         return {
             version: "1.1.0"
@@ -587,13 +790,13 @@ var info = {
     // destroyed(editor){
     //
     // },
-    dashboard: dashboard$4
+    dashboard: dashboard$5
 };
 
-var template$5 = "<form @submit.prevent=\"createLink\"> <input type=\"text\" :placeholder=\"$parent.locale['please enter a url']\" v-model=\"url\" maxlength=\"1024\"> <button type=\"submit\">{{$parent.locale[\"create link\"]}}</button> </form>";
+var template$6 = "<form @submit.prevent=\"createLink\"> <input type=\"text\" :placeholder=\"$parent.locale['please enter a url']\" v-model=\"url\" maxlength=\"1024\"> <button type=\"submit\">{{$parent.locale[\"create link\"]}}</button> </form>";
 
-var dashboard$5 = {
-    template: template$5,
+var dashboard$6 = {
+    template: template$6,
     data: function data(){
         return {url: null}
     },
@@ -616,16 +819,16 @@ var link = {
     name: 'link',
     icon: 'fa fa-chain',
     i18n: 'link',
-    dashboard: dashboard$5
+    dashboard: dashboard$6
 };
 
-var template$6 = "<div> <button type=\"button\" @click=\"$parent.execCommand('insertOrderedList')\"> {{$parent.locale[\"ordered list\"]}} </button> <button type=\"button\" @click=\"$parent.execCommand('insertUnorderedList')\"> {{$parent.locale[\"unordered list\"]}} </button> </div>";
+var template$7 = "<div> <button type=\"button\" @click=\"$parent.execCommand('insertOrderedList')\"> {{$parent.locale[\"ordered list\"]}} </button> <button type=\"button\" @click=\"$parent.execCommand('insertUnorderedList')\"> {{$parent.locale[\"unordered list\"]}} </button> </div>";
 
 /**
  * Created by peak on 2017/2/10.
  */
-var dashboard$6 = {
-    template: template$6
+var dashboard$7 = {
+    template: template$7
 };
 
 /**
@@ -636,16 +839,16 @@ var list = {
     name: 'list',
     icon: 'fa fa-list',
     i18n: 'list',
-    dashboard: dashboard$6
+    dashboard: dashboard$7
 };
 
-var template$7 = "<form @submit.prevent=\"insertTable\"> <label> {{$parent.locale[\"row count\"]}} <input type=\"number\" style=\"width: 60px\" maxlength=\"2\" min=\"2\" max=\"10\" v-model=\"rows\"> </label> <label> {{$parent.locale[\"column count\"]}} <input type=\"number\" style=\"width: 60px\" maxlength=\"2\" min=\"2\" max=\"10\" v-model=\"cols\"> </label> <button type=\"submit\">{{$parent.locale.save}}</button> </form>";
+var template$8 = "<form @submit.prevent=\"insertTable\"> <label> {{$parent.locale[\"row count\"]}} <input type=\"number\" style=\"width: 60px\" maxlength=\"2\" min=\"2\" max=\"10\" v-model=\"rows\"> </label> <label> {{$parent.locale[\"column count\"]}} <input type=\"number\" style=\"width: 60px\" maxlength=\"2\" min=\"2\" max=\"10\" v-model=\"cols\"> </label> <button type=\"submit\">{{$parent.locale.save}}</button> </form>";
 
 /**
  * Created by peak on 2017/2/10.
  */
-var dashboard$7 = {
-    template: template$7,
+var dashboard$8 = {
+    template: template$8,
     data: function data(){
         return {
             rows: 2,
@@ -688,13 +891,13 @@ var table = {
     name: 'tabulation',
     icon: 'fa fa-table',
     i18n: 'table',
-    dashboard: dashboard$7
+    dashboard: dashboard$8
 };
 
-var template$8 = "<div> <button type=\"button\" @click=\"$parent.execCommand('bold')\">{{$parent.locale[\"bold\"]}}</button> <button type=\"button\" @click=\"$parent.execCommand('italic')\">{{$parent.locale[\"italic\"]}}</button> <button type=\"button\" @click=\"$parent.execCommand('underline')\">{{$parent.locale[\"underline\"]}}</button> <button type=\"button\" @click=\"$parent.execCommand('strikeThrough')\">{{$parent.locale[\"strike through\"]}} </button> <button type=\"button\" @click=\"$parent.execCommand('subscript')\">{{$parent.locale[\"subscript\"]}}</button> <button type=\"button\" @click=\"$parent.execCommand('superscript')\">{{$parent.locale[\"superscript\"]}}</button> </div> ";
+var template$9 = "<div> <button type=\"button\" @click=\"$parent.execCommand('bold')\">{{$parent.locale[\"bold\"]}}</button> <button type=\"button\" @click=\"$parent.execCommand('italic')\">{{$parent.locale[\"italic\"]}}</button> <button type=\"button\" @click=\"$parent.execCommand('underline')\">{{$parent.locale[\"underline\"]}}</button> <button type=\"button\" @click=\"$parent.execCommand('strikeThrough')\">{{$parent.locale[\"strike through\"]}} </button> <button type=\"button\" @click=\"$parent.execCommand('subscript')\">{{$parent.locale[\"subscript\"]}}</button> <button type=\"button\" @click=\"$parent.execCommand('superscript')\">{{$parent.locale[\"superscript\"]}}</button> </div> ";
 
-var dashboard$8 = {
-    template: template$8
+var dashboard$9 = {
+    template: template$9
 };
 
 /**
@@ -705,7 +908,7 @@ var text = {
     name: 'text',
     icon: 'fa fa-pencil',
     i18n: 'text',
-    dashboard: dashboard$8
+    dashboard: dashboard$9
 };
 
 /**
@@ -748,6 +951,7 @@ var buildInModules = [
     unlink,
     table,
     image,
+    video,
     hr,
     eraser,
     undo,
@@ -963,6 +1167,16 @@ RangeHandler.prototype.getAllTextNodesInRange = function getAllTextNodesInRange 
     return textNodes
 };
 
+RangeHandler.prototype.getVidelElement = function getVidelElement (url) {
+    var containerEl = document.createElement('div');
+    var el = document.createElement('video');
+    el.src = url;
+    el.style.width = '100%';
+    el.style.height = 'auto';
+    containerEl.appendChild(el);
+    return containerEl
+};
+
 /**
  * execute edit command
  * @param {String} command
@@ -1123,6 +1337,11 @@ RangeHandler.prototype.execCommand = function execCommand (command, arg) {
             document.execCommand(Command.INSERT_IMAGE, false, arg);
             break
         }
+        case Command.INSERT_VIDEO: {
+            var videoEl = this.getVidelElement(arg);
+            this.range.insertNode(videoEl);
+            break
+        }
         case Command.CREATE_LINK: {
             document.execCommand(Command.CREATE_LINK, false, arg);
             break
@@ -1193,13 +1412,13 @@ RangeHandler.prototype.execCommand = function execCommand (command, arg) {
 
 __$styleInject(".vue-html5-editor{font-size:14px;line-height:1.5;background-color:#fff;color:#333;border:1px solid #ddd;text-align:left;border-radius:5px;overflow:hidden;box-sizing:border-box}.vue-html5-editor *{box-sizing:border-box}.vue-html5-editor.full-screen{position:fixed!important;top:0!important;left:0!important;bottom:0!important;right:0!important;border-radius:0}.vue-html5-editor>.toolbar{position:relative;background-color:inherit}.vue-html5-editor>.toolbar>ul{list-style:none;padding:0;margin:0;border-bottom:1px solid #ddd}.vue-html5-editor>.toolbar>ul>li{display:inline-block;cursor:pointer;text-align:center;line-height:36px;padding:0 10px}.vue-html5-editor>.toolbar>ul>li .icon{height:16px;width:16px;display:inline-block;vertical-align:middle}.vue-html5-editor>.toolbar>.dashboard{background-color:inherit;border-bottom:1px solid #ddd;padding:10px;position:absolute;top:100%;left:0;right:0;overflow:auto}.vue-html5-editor>.toolbar>.dashboard input[type=number],.vue-html5-editor>.toolbar>.dashboard select{padding:6px 12px;color:inherit;background-color:transparent;border:1px solid #ddd;border-radius:5px}.vue-html5-editor>.toolbar>.dashboard input[type=number]:hover,.vue-html5-editor>.toolbar>.dashboard input[type=text]:hover,.vue-html5-editor>.toolbar>.dashboard select:hover{border-color:#bebebe}.vue-html5-editor>.toolbar>.dashboard input[type=number][disabled],.vue-html5-editor>.toolbar>.dashboard input[type=number][readonly],.vue-html5-editor>.toolbar>.dashboard input[type=text][disabled],.vue-html5-editor>.toolbar>.dashboard input[type=text][readonly],.vue-html5-editor>.toolbar>.dashboard select[disabled],.vue-html5-editor>.toolbar>.dashboard select[readonly]{background-color:#eee;opacity:1}.vue-html5-editor>.toolbar>.dashboard input[type=number][disabled],.vue-html5-editor>.toolbar>.dashboard input[type=text][disabled],.vue-html5-editor>.toolbar>.dashboard select[disabled]{cursor:not-allowed}.vue-html5-editor>.toolbar>.dashboard button{color:inherit;background-color:inherit;padding:6px 12px;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;border:1px solid #ddd;border-radius:5px;margin-right:4px;margin-bottom:4px}.vue-html5-editor>.toolbar>.dashboard button:hover{border-color:#bebebe}.vue-html5-editor>.toolbar>.dashboard button[disabled]{cursor:not-allowed;opacity:.68}.vue-html5-editor>.toolbar>.dashboard button:last-child{margin-right:0}.vue-html5-editor>.toolbar>.dashboard label{font-weight:bolder}.vue-html5-editor>.content{overflow:auto;padding:10px}.vue-html5-editor>.content:focus{outline:0}@media (max-width:767px){.vue-html5-editor{margin-bottom:5px;width:100%!important}button:last-child,input[type=number]:last-child,input[type=text]:last-child,label:last-child,select:last-child{margin-bottom:0}}button:last-child,input:last-child,label:last-child,select:last-child{margin-right:0}",undefined);
 
-var template$9 = "<div class=\"vue-html5-editor\" :class=\"{'full-screen':fullScreen}\" :style=\"{'z-index':zIndex}\"> <div class=\"toolbar\" :style=\"{'z-index':zIndex+1}\" ref=\"toolbar\"> <ul> <template v-for=\"module in modules\"> <li :title=\"locale[module.i18n]\" @click=\"activeModule(module)\"> <span class=\"icon\" :class=\"module.icon\"></span> <template v-if=\"showModuleName === undefined ? defaultShowModuleName : showModuleName\"> &nbsp;{{locale[module.i18n]}} </template> </li> </template> </ul> <div class=\"dashboard\" v-show=\"dashboard\" ref=\"dashboard\"> <keep-alive> <div v-show=\"dashboard\" :is=\"dashboard\"></div> </keep-alive> </div> </div> <div class=\"content\" ref=\"content\" :style=\"contentStyle\" contenteditable @click=\"toggleDashboard(dashboard)\"> </div> </div>";
+var template$10 = "<div class=\"vue-html5-editor\" :class=\"{'full-screen':fullScreen}\" :style=\"{'z-index':zIndex}\"> <div class=\"toolbar\" :style=\"{'z-index':zIndex+1}\" ref=\"toolbar\"> <ul> <template v-for=\"module in modules\"> <li :title=\"locale[module.i18n]\" @click=\"activeModule(module)\"> <span class=\"icon\" :class=\"module.icon\"></span> <template v-if=\"showModuleName === undefined ? defaultShowModuleName : showModuleName\"> &nbsp;{{locale[module.i18n]}} </template> </li> </template> </ul> <div class=\"dashboard\" v-show=\"dashboard\" ref=\"dashboard\"> <keep-alive> <div v-show=\"dashboard\" :is=\"dashboard\"></div> </keep-alive> </div> </div> <div class=\"content\" ref=\"content\" :style=\"contentStyle\" contenteditable @click=\"toggleDashboard(dashboard)\"> </div> </div>";
 
 /**
  * Created by peak on 2017/2/9.
  */
 var editor = {
-    template: template$9,
+    template: template$10,
     props: {
         content: {
             type: String,
@@ -1397,6 +1616,7 @@ var editor = {
 var i18nZhCn = {
     align: '对齐方式',
     image: '图片',
+    video: '视频',
     list: '列表',
     link: '链接',
     unlink: '去除链接',
@@ -1409,6 +1629,7 @@ var i18nZhCn = {
     color: '颜色',
     'please enter a url': '请输入地址',
     'create link': '创建链接',
+    'Miss required option': '缺少必要的配置信息。',
     bold: '加粗',
     italic: '倾斜',
     underline: '下划线',
@@ -1444,6 +1665,7 @@ var i18nZhCn = {
 var i18nEnUs = {
     align: 'align',
     image: 'image',
+    video: 'video',
     list: 'list',
     link: 'link',
     unlink: 'unlink',
@@ -1456,6 +1678,7 @@ var i18nEnUs = {
     color: 'color',
     'please enter a url': 'please enter a url',
     'create link': 'create link',
+    'Miss required option': 'Miss required option.',
     bold: 'bold',
     italic: 'italic',
     underline: 'underline',
