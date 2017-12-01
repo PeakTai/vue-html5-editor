@@ -87,22 +87,31 @@ export default class RangeHandler {
         return textNodes
     }
 
-    getVidelElement(url) {
+    getVidelElement(url, {width, height, controls}) {
         const containerEl = document.createElement('div')
         const el = document.createElement('video')
         el.src = url
-        el.style.width = '100%'
-        el.style.height = 'auto'
+        el.style.width = width ? `${width}px` : '100%'
+        el.style.height = height ? `${height}px` : 'auto'
+        el.controls = controls
         containerEl.appendChild(el)
+        containerEl.style.textAlign = 'center'
         return containerEl
     }
 
+    getImageElement({url, width = '100%', height = '100%'}) {
+        const el = document.createElement('img')
+        el.style.width = (`${+width}`) === width ? (`${width}px`) : width
+        el.style.height = (`${+height}`) === height ? (`${height}px`) : height
+        el.src = url
+        return el
+    }
     /**
      * execute edit command
      * @param {String} command
      * @param arg
      */
-    execCommand(command, arg) {
+    execCommand(command, arg, options = {}) {
         switch (command) {
 
             case Command.JUSTIFY_LEFT: {
@@ -252,11 +261,12 @@ export default class RangeHandler {
                 break
             }
             case Command.INSERT_IMAGE: {
-                document.execCommand(Command.INSERT_IMAGE, false, arg)
+                const imageEl = this.getImageElement(arg)
+                this.range.insertNode(imageEl)
                 break
             }
             case Command.INSERT_VIDEO: {
-                const videoEl = this.getVidelElement(arg)
+                const videoEl = this.getVidelElement(arg, options)
                 this.range.insertNode(videoEl)
                 break
             }

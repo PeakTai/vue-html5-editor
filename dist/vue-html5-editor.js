@@ -1,7 +1,7 @@
 /**
- * Vue-html5-editor 1.1.0
- * https://github.com/PeakTai/vue-html5-editor
- * build at Fri Nov 10 2017 18:50:18 GMT+0800 (CST)
+ * Vue-html5-editor 1.1.1
+ * https://github.com/realywithoutname/vue-html5-editor
+ * build at Fri Dec 01 2017 13:02:33 GMT+0800 (CST)
  */
 
 (function (global, factory) {
@@ -308,7 +308,7 @@ var t=new Array(arguments.length-1);if(arguments.length>1){ for(var n=1;n<argume
 e.exports=window.lrz;}])});
 });
 
-var template$3 = "<div> <div v-show=\"upload.status=='ready'\"> <input type=\"text\" v-model=\"imageUrl\" maxlength=\"255\" :placeholder=\"$parent.locale['please enter a url']\"> <button type=\"button\" @click=\"insertImageUrl\">{{$parent.locale.save}}</button> <input type=\"file\" ref=\"file\" style=\"display: none !important\" @change=\"process\" accept=\"image/png,image/jpeg,image/gif,image/jpg\"> <button type=\"button\" @click=\"pick\">{{$parent.locale.upload}}</button> </div> <div v-if=\"upload.status=='progress'\"> {{$parent.locale.progress}}:{{upload.progressComputable ? $parent.locale.unknown : upload.complete}} </div> <div v-if=\"upload.status=='success'\"> {{$parent.locale[\"please wait\"]}}... </div> <div v-if=\"upload.status=='error'\"> {{$parent.locale.error}}:{{upload.errorMsg}} <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> <div v-if=\"upload.status=='abort'\"> {{$parent.locale.upload}}&nbsp;{{$parent.locale.abort}}, <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> </div> ";
+var template$3 = "<div> <div v-show=\"upload.status=='ready'\"> <input type=\"text\" v-model=\"width\" :placeholder=\"$parent.locale['please enter width']\"> <input type=\"text\" v-model=\"height\" :placeholder=\"$parent.locale['please enter height']\"> <input type=\"text\" v-model=\"imageUrl\" maxlength=\"255\" :placeholder=\"$parent.locale['please enter a url']\"> <button type=\"button\" @click=\"insertImageUrl\">{{$parent.locale.save}}</button> <input type=\"file\" ref=\"file\" style=\"display: none !important\" @change=\"process\" accept=\"image/png,image/jpeg,image/gif,image/jpg\"> <button type=\"button\" @click=\"pick\">{{$parent.locale.upload}}</button> </div> <div v-if=\"upload.status=='progress'\"> {{$parent.locale.progress}}:{{upload.progressComputable ? $parent.locale.unknown : upload.complete}} </div> <div v-if=\"upload.status=='success'\"> {{$parent.locale[\"please wait\"]}}... </div> <div v-if=\"upload.status=='error'\"> {{$parent.locale.error}}:{{upload.errorMsg}} <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> <div v-if=\"upload.status=='abort'\"> {{$parent.locale.upload}}&nbsp;{{$parent.locale.abort}}, <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> </div> ";
 
 /**
  * Created by peak on 2017/2/10.
@@ -318,6 +318,8 @@ var dashboard$3 = {
     data: function data() {
         return {
             imageUrl: '',
+            height: '',
+            width: '',
             upload: {
                 status: 'ready', // progress,success,error,abort
                 errorMsg: null,
@@ -334,7 +336,9 @@ var dashboard$3 = {
             if (!this.imageUrl) {
                 return
             }
-            this.$parent.execCommand(Command.INSERT_IMAGE, this.imageUrl);
+            this.$parent.execCommand(Command.INSERT_IMAGE, {
+                url: this.imageUrl, width: this.width, height: this.height
+            });
             this.imageUrl = null;
         },
         pick: function pick() {
@@ -383,7 +387,6 @@ var dashboard$3 = {
             if (config.upload && typeof config.fieldName === 'string') {
                 config.upload.fieldName = config.fieldName;
             }
-
             if (typeof config.compress === 'boolean') {
                 config.compress = {
                     width: config.width,
@@ -418,7 +421,6 @@ var dashboard$3 = {
                     }
                 })
             }
-
             var rstPromise = config.compress ? lrz_all_bundle(file, config.compress) : gennerRst();
             var _rst = null;
             rstPromise
@@ -426,6 +428,7 @@ var dashboard$3 = {
                     _rst = rst;
                     // 配置beforeUpload钩子允许业务程序处理文件，或做一些上传前的准备
                     if (config.beforeUpload && typeof config.beforeUpload === 'function') {
+                        console.log(rst.file);
                         return config.beforeUpload.call(null, rst.file)
                     }
                 })
@@ -437,7 +440,7 @@ var dashboard$3 = {
 
                     // 如果钩子返回字符串，则当作是图片URL
                     if (typeof res === 'string') {
-                        return this$1.$parent.execCommand(Command.INSERT_IMAGE, res)
+                        return this$1.insertImageUrl(res)
                     }
 
                     if (config.upload) {
@@ -449,7 +452,7 @@ var dashboard$3 = {
                 .catch(this.setUploadError);
         },
         insertBase64: function insertBase64(data) {
-            this.$parent.execCommand(Command.INSERT_IMAGE, data);
+            this.insertImageUrl(data);
         },
         uploadToServer: function uploadToServer(file) {
             var this$1 = this;
@@ -494,7 +497,7 @@ var dashboard$3 = {
                 try {
                     var url = config.uploadHandler(xhr.responseText);
                     if (url) {
-                        this$1.$parent.execCommand(Command.INSERT_IMAGE, url);
+                        this$1.insertImageUrl(url);
                     }
                 } catch (err) {
                     this$1.setUploadError(err.toString());
@@ -558,7 +561,7 @@ var image = {
     dashboard: dashboard$3
 };
 
-var template$4 = "<div> <div v-show=\"upload.status=='ready'\"> <input type=\"text\" v-model=\"videoUrl\" maxlength=\"255\" :placeholder=\"$parent.locale['please enter a url']\"> <button type=\"button\" @click=\"insertVideoUrl\">{{$parent.locale.save}}</button> <input type=\"file\" ref=\"file\" style=\"display: none !important\" @change=\"process\" accept=\"image/png,image/jpeg,image/gif,image/jpg\"> <button type=\"button\" @click=\"pick\">{{$parent.locale.upload}}</button> </div> <div v-if=\"upload.status=='progress'\"> {{$parent.locale.progress}}:{{upload.progressComputable ? $parent.locale.unknown : upload.complete}} </div> <div v-if=\"upload.status=='success'\"> {{$parent.locale[\"please wait\"]}}... </div> <div v-if=\"upload.status=='error'\"> {{$parent.locale.error}}:{{upload.errorMsg}} <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> <div v-if=\"upload.status=='abort'\"> {{$parent.locale.upload}}&nbsp;{{$parent.locale.abort}}, <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> </div> ";
+var template$4 = "<div> <div v-show=\"upload.status=='ready'\"> <input type=\"number\" v-model=\"width\" :placeholder=\"$parent.locale['please enter width']\"> <input type=\"number\" v-model=\"height\" :placeholder=\"$parent.locale['please enter height']\"> <input type=\"text\" v-model=\"videoUrl\" maxlength=\"255\" :placeholder=\"$parent.locale['please enter a url']\"> <button type=\"button\" @click=\"insertVideoUrl\">{{$parent.locale.save}}</button> <input type=\"file\" ref=\"file\" style=\"display: none !important\" @change=\"process\" accept=\"video/*\"> <button type=\"button\" @click=\"pick\">{{$parent.locale.upload}}</button> </div> <div v-if=\"upload.status=='progress'\"> {{$parent.locale.progress}}:{{upload.progressComputable ? $parent.locale.unknown : upload.complete}} </div> <div v-if=\"upload.status=='success'\"> {{$parent.locale[\"please wait\"]}}... </div> <div v-if=\"upload.status=='error'\"> {{$parent.locale.error}}:{{upload.errorMsg}} <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> <div v-if=\"upload.status=='abort'\"> {{$parent.locale.upload}}&nbsp;{{$parent.locale.abort}}, <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> </div> ";
 
 /**
  * Created by liuJD on 2017/11/10.
@@ -573,7 +576,9 @@ var dashboard$4 = {
                 errorMsg: null,
                 progressComputable: false,
                 complete: 0
-            }
+            },
+            width: '',
+            height: ''
         }
     },
     methods: {
@@ -595,6 +600,15 @@ var dashboard$4 = {
 
             this.upload.status = 'error';
             this.upload.errorMsg = msg && msg.toString();
+        },
+        setProgress: function setProgress(progress) {
+            if (progress === 1) {
+                this.upload.progressComputable = true;
+                return
+            }
+            this.upload.status = 'progress';
+            this.upload.progressComputable = false;
+            this.upload.complete = (progress * 100).toFixed(2);
         },
         process: function process() {
             var this$1 = this;
@@ -632,26 +646,32 @@ var dashboard$4 = {
             }
 
             var file = this.$refs.file.files[0];
-            if (file.size > config.sizeLimit) {
+            if (config.sizeLimit && file.size > config.sizeLimit) {
                 this.setUploadError(this.$parent.locale['exceed size limit']);
                 return
             }
             this.$refs.file.value = null;
-
             var doPromise = Promise.resolve(
                 config.beforeUpload && typeof config.beforeUpload === 'function'
-                    ? config.beforeUpload.call(null, file)
+                    ? config.beforeUpload.call(null, file, this.setProgress)
                     : null
             );
+
+            var options = {
+                width: this.width || config.width,
+                height: this.height || config.height,
+                controls: config.controls || true
+            };
             doPromise
                 .then(function (res) {
+                    this$1.reset();
                     if (typeof res === 'boolean' && res === false) {
                         return
                     }
 
                     // 如果钩子返回字符串，则当作是图片URL
                     if (typeof res === 'string') {
-                        return this$1.$parent.execCommand(Command.INSERT_VIDEO, res)
+                        return this$1.$parent.execCommand(Command.INSERT_VIDEO, res, options)
                     }
 
                     return config.upload && this$1.uploadToServer(file)
@@ -744,7 +764,7 @@ var video = {
         // width: 1600,
         // height: 1600,
         // quality: 80,
-        sizeLimit: 512 * 1024,// 512k
+        // sizeLimit: 512 * 1024,// 512k
         // upload: {
         //     url: null,
         //     headers: {},
@@ -768,7 +788,7 @@ var dashboard$5 = {
     template: template$5,
     data: function data(){
         return {
-            version: "1.1.0"
+            version: "1.1.1"
         }
     }
 };
@@ -1167,23 +1187,41 @@ RangeHandler.prototype.getAllTextNodesInRange = function getAllTextNodesInRange 
     return textNodes
 };
 
-RangeHandler.prototype.getVidelElement = function getVidelElement (url) {
+RangeHandler.prototype.getVidelElement = function getVidelElement (url, ref) {
+        var width = ref.width;
+        var height = ref.height;
+        var controls = ref.controls;
+
     var containerEl = document.createElement('div');
     var el = document.createElement('video');
     el.src = url;
-    el.style.width = '100%';
-    el.style.height = 'auto';
+    el.style.width = width ? (width + "px") : '100%';
+    el.style.height = height ? (height + "px") : 'auto';
+    el.controls = controls;
     containerEl.appendChild(el);
+    containerEl.style.textAlign = 'center';
     return containerEl
 };
 
+RangeHandler.prototype.getImageElement = function getImageElement (ref) {
+        var url = ref.url;
+        var width = ref.width; if ( width === void 0 ) width = '100%';
+        var height = ref.height; if ( height === void 0 ) height = '100%';
+
+    var el = document.createElement('img');
+    el.style.width = (("" + (+width))) === width ? ((width + "px")) : width;
+    el.style.height = (("" + (+height))) === height ? ((height + "px")) : height;
+    el.src = url;
+    return el
+};
 /**
  * execute edit command
  * @param {String} command
  * @param arg
  */
-RangeHandler.prototype.execCommand = function execCommand (command, arg) {
+RangeHandler.prototype.execCommand = function execCommand (command, arg, options) {
         var this$1 = this;
+        if ( options === void 0 ) options = {};
 
     switch (command) {
 
@@ -1334,11 +1372,12 @@ RangeHandler.prototype.execCommand = function execCommand (command, arg) {
             break
         }
         case Command.INSERT_IMAGE: {
-            document.execCommand(Command.INSERT_IMAGE, false, arg);
+            var imageEl = this.getImageElement(arg);
+            this.range.insertNode(imageEl);
             break
         }
         case Command.INSERT_VIDEO: {
-            var videoEl = this.getVidelElement(arg);
+            var videoEl = this.getVidelElement(arg, options);
             this.range.insertNode(videoEl);
             break
         }
@@ -1505,10 +1544,10 @@ var editor = {
         toggleDashboard: function toggleDashboard(dashboard){
             this.dashboard = this.dashboard === dashboard ? null : dashboard;
         },
-        execCommand: function execCommand(command, arg){
+        execCommand: function execCommand(command, arg, options){
             this.restoreSelection();
             if (this.range) {
-                new RangeHandler(this.range).execCommand(command, arg);
+                new RangeHandler(this.range).execCommand(command, arg, options);
             }
             this.toggleDashboard();
             this.$emit('change', this.$refs.content.innerHTML);
@@ -1659,7 +1698,10 @@ var i18nZhCn = {
     hr: '分隔线',
     undo: '撤消',
     'line height': '行高',
-    'exceed size limit': '超出大小限制'
+    'exceed size limit': '超出大小限制',
+    'ready upload...': '准备上传',
+    'please enter width': '输入宽',
+    'please enter height': '输入高'
 };
 
 var i18nEnUs = {
@@ -1708,7 +1750,10 @@ var i18nEnUs = {
     hr: 'horizontal rule',
     undo: 'undo',
     'line height': 'line height',
-    'exceed size limit': 'exceed size limit'
+    'exceed size limit': 'exceed size limit',
+    'ready upload...': 'ready upload...',
+    'please enter width': 'please enter width',
+    'please enter height': 'please enter height'
 };
 
 /**

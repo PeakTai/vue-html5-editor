@@ -10,6 +10,8 @@ export default {
     data() {
         return {
             imageUrl: '',
+            height: '',
+            width: '',
             upload: {
                 status: 'ready', // progress,success,error,abort
                 errorMsg: null,
@@ -26,7 +28,9 @@ export default {
             if (!this.imageUrl) {
                 return
             }
-            this.$parent.execCommand(Command.INSERT_IMAGE, this.imageUrl)
+            this.$parent.execCommand(Command.INSERT_IMAGE, {
+                url: this.imageUrl, width: this.width, height: this.height
+            })
             this.imageUrl = null
         },
         pick() {
@@ -71,7 +75,6 @@ export default {
             if (config.upload && typeof config.fieldName === 'string') {
                 config.upload.fieldName = config.fieldName
             }
-
             if (typeof config.compress === 'boolean') {
                 config.compress = {
                     width: config.width,
@@ -106,7 +109,6 @@ export default {
                     }
                 })
             }
-
             const rstPromise = config.compress ? lrz(file, config.compress) : gennerRst()
             let _rst = null
             rstPromise
@@ -114,6 +116,7 @@ export default {
                     _rst = rst
                     // 配置beforeUpload钩子允许业务程序处理文件，或做一些上传前的准备
                     if (config.beforeUpload && typeof config.beforeUpload === 'function') {
+                        console.log(rst.file)
                         return config.beforeUpload.call(null, rst.file)
                     }
                 })
@@ -125,7 +128,7 @@ export default {
 
                     // 如果钩子返回字符串，则当作是图片URL
                     if (typeof res === 'string') {
-                        return this.$parent.execCommand(Command.INSERT_IMAGE, res)
+                        return this.insertImageUrl(res)
                     }
 
                     if (config.upload) {
@@ -137,7 +140,7 @@ export default {
                 .catch(this.setUploadError)
         },
         insertBase64(data) {
-            this.$parent.execCommand(Command.INSERT_IMAGE, data)
+            this.insertImageUrl(data)
         },
         uploadToServer(file) {
             const config = this.$options.module.config
@@ -180,7 +183,7 @@ export default {
                 try {
                     const url = config.uploadHandler(xhr.responseText)
                     if (url) {
-                        this.$parent.execCommand(Command.INSERT_IMAGE, url)
+                        this.insertImageUrl(url)
                     }
                 } catch (err) {
                     this.setUploadError(err.toString())

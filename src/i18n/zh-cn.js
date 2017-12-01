@@ -44,5 +44,8 @@ export default {
     hr: '分隔线',
     undo: '撤消',
     'line height': '行高',
-    'exceed size limit': '超出大小限制'
+    'exceed size limit': '超出大小限制',
+    'ready upload...': '准备上传',
+    'please enter width': '输入宽',
+    'please enter height': '输入高'
 }

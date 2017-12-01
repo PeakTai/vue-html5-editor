@@ -1,6 +1,8 @@
 <div>
 
     <div v-show="upload.status=='ready'">
+        <input type="text" v-model="width" :placeholder="$parent.locale['please enter width']">
+        <input type="text" v-model="height" :placeholder="$parent.locale['please enter height']">
 
         <input type="text" v-model="imageUrl" maxlength="255" :placeholder="$parent.locale['please enter a url']">
         <button type="button" @click="insertImageUrl">{{$parent.locale.save}}</button>

@@ -44,5 +44,8 @@ export default {
     hr: 'horizontal rule',
     undo: 'undo',
     'line height': 'line height',
-    'exceed size limit': 'exceed size limit'
+    'exceed size limit': 'exceed size limit',
+    'ready upload...': 'ready upload...',
+    'please enter width': 'please enter width',
+    'please enter height': 'please enter height'
 }

@@ -1,10 +1,10 @@
 {
-  "name": "vue-html5-editor",
-  "version": "1.1.0",
+  "name": "vh-editor",
+  "version": "1.1.1",
   "description": "A WYSIWYG text editor base on html5 and vue",
   "repository": {
     "type": "git",
-    "url": "https://github.com/PeakTai/vue-html5-editor"
+    "url": "https://github.com/realywithoutname/vue-html5-editor"
   },
   "main": "dist/vue-html5-editor.js",
   "scripts": {

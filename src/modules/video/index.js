@@ -15,7 +15,7 @@ export default {
         // width: 1600,
         // height: 1600,
         // quality: 80,
-        sizeLimit: 512 * 1024,// 512k
+        // sizeLimit: 512 * 1024,// 512k
         // upload: {
         //     url: null,
         //     headers: {},

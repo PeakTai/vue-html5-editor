@@ -14,7 +14,9 @@ export default {
                 errorMsg: null,
                 progressComputable: false,
                 complete: 0
-            }
+            },
+            width: '',
+            height: ''
         }
     },
     methods: {
@@ -34,6 +36,15 @@ export default {
         setUploadError(msg = ''){
             this.upload.status = 'error'
             this.upload.errorMsg = msg && msg.toString()
+        },
+        setProgress(progress) {
+            if (progress === 1) {
+                this.upload.progressComputable = true
+                return
+            }
+            this.upload.status = 'progress'
+            this.upload.progressComputable = false
+            this.upload.complete = (progress * 100).toFixed(2)
         },
         process() {
             const config = this.$options.module.config
@@ -69,26 +80,32 @@ export default {
             }
 
             const file = this.$refs.file.files[0]
-            if (file.size > config.sizeLimit) {
+            if (config.sizeLimit && file.size > config.sizeLimit) {
                 this.setUploadError(this.$parent.locale['exceed size limit'])
                 return
             }
             this.$refs.file.value = null
-
             const doPromise = Promise.resolve(
                 config.beforeUpload && typeof config.beforeUpload === 'function'
-                    ? config.beforeUpload.call(null, file)
+                    ? config.beforeUpload.call(null, file, this.setProgress)
                     : null
             )
+
+            const options = {
+                width: this.width || config.width,
+                height: this.height || config.height,
+                controls: config.controls || true
+            }
             doPromise
                 .then((res) => {
+                    this.reset()
                     if (typeof res === 'boolean' && res === false) {
                         return
                     }
 
                     // 如果钩子返回字符串，则当作是图片URL
                     if (typeof res === 'string') {
-                        return this.$parent.execCommand(Command.INSERT_VIDEO, res)
+                        return this.$parent.execCommand(Command.INSERT_VIDEO, res, options)
                     }
 
                     return config.upload && this.uploadToServer(file)

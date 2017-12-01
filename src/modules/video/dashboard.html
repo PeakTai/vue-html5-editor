@@ -1,12 +1,13 @@
 <div>
 
     <div v-show="upload.status=='ready'">
-
+        <input type="number" v-model="width" :placeholder="$parent.locale['please enter width']">
+        <input type="number" v-model="height" :placeholder="$parent.locale['please enter height']">
         <input type="text" v-model="videoUrl" maxlength="255" :placeholder="$parent.locale['please enter a url']">
         <button type="button" @click="insertVideoUrl">{{$parent.locale.save}}</button>
 
-        <input type="file" ref="file" style="display: none !important;" @change="process"
-               accept="image/png,image/jpeg,image/gif,image/jpg">
+        <input type="file" ref="file" style="display: none !important;" @change="process" accept="video/*">
+
         <button type="button" @click="pick">{{$parent.locale.upload}}</button>
     </div>
 
