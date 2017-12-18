@@ -24,7 +24,8 @@ export default {
         reset(){
             this.upload.status = 'ready'
         },
-        insertImageUrl() {
+        insertImageUrl(e, url) {
+            this.imageUrl = url || this.imageUrl
             if (!this.imageUrl) {
                 return
             }
@@ -116,7 +117,6 @@ export default {
                     _rst = rst
                     // 配置beforeUpload钩子允许业务程序处理文件，或做一些上传前的准备
                     if (config.beforeUpload && typeof config.beforeUpload === 'function') {
-                        console.log(rst.file)
                         return config.beforeUpload.call(null, rst.file)
                     }
                 })
@@ -128,7 +128,7 @@ export default {
 
                     // 如果钩子返回字符串，则当作是图片URL
                     if (typeof res === 'string') {
-                        return this.insertImageUrl(res)
+                        return this.insertImageUrl(null, res)
                     }
 
                     if (config.upload) {
@@ -140,7 +140,7 @@ export default {
                 .catch(this.setUploadError)
         },
         insertBase64(data) {
-            this.insertImageUrl(data)
+            this.insertImageUrl(null, data)
         },
         uploadToServer(file) {
             const config = this.$options.module.config
@@ -183,7 +183,7 @@ export default {
                 try {
                     const url = config.uploadHandler(xhr.responseText)
                     if (url) {
-                        this.insertImageUrl(url)
+                        this.insertImageUrl(null, url)
                     }
                 } catch (err) {
                     this.setUploadError(err.toString())

@@ -1,7 +1,7 @@
 /**
- * Vue-html5-editor 1.1.1
+ * Vue-html5-editor 1.1.3
  * https://github.com/realywithoutname/vue-html5-editor
- * build at Fri Dec 01 2017 13:02:33 GMT+0800 (CST)
+ * build at Wed Dec 06 2017 13:15:42 GMT+0800 (CST)
  */
 
 (function (global, factory) {
@@ -332,7 +332,8 @@ var dashboard$3 = {
         reset: function reset(){
             this.upload.status = 'ready';
         },
-        insertImageUrl: function insertImageUrl() {
+        insertImageUrl: function insertImageUrl(e, url) {
+            this.imageUrl = url || this.imageUrl;
             if (!this.imageUrl) {
                 return
             }
@@ -428,7 +429,6 @@ var dashboard$3 = {
                     _rst = rst;
                     // 配置beforeUpload钩子允许业务程序处理文件，或做一些上传前的准备
                     if (config.beforeUpload && typeof config.beforeUpload === 'function') {
-                        console.log(rst.file);
                         return config.beforeUpload.call(null, rst.file)
                     }
                 })
@@ -440,7 +440,7 @@ var dashboard$3 = {
 
                     // 如果钩子返回字符串，则当作是图片URL
                     if (typeof res === 'string') {
-                        return this$1.insertImageUrl(res)
+                        return this$1.insertImageUrl(null, res)
                     }
 
                     if (config.upload) {
@@ -452,7 +452,7 @@ var dashboard$3 = {
                 .catch(this.setUploadError);
         },
         insertBase64: function insertBase64(data) {
-            this.insertImageUrl(data);
+            this.insertImageUrl(null, data);
         },
         uploadToServer: function uploadToServer(file) {
             var this$1 = this;
@@ -497,7 +497,7 @@ var dashboard$3 = {
                 try {
                     var url = config.uploadHandler(xhr.responseText);
                     if (url) {
-                        this$1.insertImageUrl(url);
+                        this$1.insertImageUrl(null, url);
                     }
                 } catch (err) {
                     this$1.setUploadError(err.toString());
@@ -788,7 +788,7 @@ var dashboard$5 = {
     template: template$5,
     data: function data(){
         return {
-            version: "1.1.1"
+            version: "1.1.3"
         }
     }
 };
