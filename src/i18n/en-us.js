@@ -47,5 +47,6 @@ export default {
     'exceed size limit': 'exceed size limit',
     'ready upload...': 'ready upload...',
     'please enter width': 'please enter width',
-    'please enter height': 'please enter height'
+    'please enter height': 'please enter height',
+    'Invalid file type': 'Invalid file type.'
 }

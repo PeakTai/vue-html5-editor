@@ -47,5 +47,6 @@ export default {
     'exceed size limit': '超出大小限制',
     'ready upload...': '准备上传',
     'please enter width': '输入宽',
-    'please enter height': '输入高'
+    'please enter height': '输入高',
+    'Invalid file type': '不接受的文件类型'
 }

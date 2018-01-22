@@ -1,6 +1,6 @@
 {
   "name": "vh-editor",
-  "version": "1.1.4",
+  "version": "1.1.7",
   "description": "A WYSIWYG text editor base on html5 and vue",
   "repository": {
     "type": "git",

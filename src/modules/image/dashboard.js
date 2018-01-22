@@ -20,6 +20,14 @@ export default {
             }
         }
     },
+    created() {
+        this.$on('fileChange', (file) => {
+            if (file && file.type.indexOf('image') === -1) {
+                return this.setUploadError(this.$parent.locale['Invalid file type'])
+            }
+            this.process(file)
+        })
+    },
     methods: {
         reset(){
             this.upload.status = 'ready'
@@ -41,7 +49,11 @@ export default {
             this.upload.status = 'error'
             this.upload.errorMsg = msg && msg.toString()
         },
-        process() {
+        fileChange() {
+            const file = this.$refs.file.files[0]
+            this.process(file)
+        },
+        process(file) {
             const config = this.$options.module.config
             // compatibility with older format
             // {
@@ -84,7 +96,6 @@ export default {
                 }
             }
 
-            const file = this.$refs.file.files[0]
             if (file.size > config.sizeLimit) {
                 this.setUploadError(this.$parent.locale['exceed size limit'])
                 return

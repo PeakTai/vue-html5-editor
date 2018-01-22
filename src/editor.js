@@ -77,6 +77,20 @@ export default {
         }
     },
     methods: {
+        preventDefaultEvent(eventName) {
+            document.addEventListener(eventName, (e) => {
+                e.preventDefault()
+            }, false)
+        },
+        toggleDrop(e) {
+            const file = e.dataTransfer.files[0]
+            this.toggleDashboard('dashboard-image')
+            this.$nextTick(() => {
+                this.$children.forEach((children) => {
+                    children.$emit('fileChange', file)
+                })
+            })
+        },
         toggleFullScreen(){
             this.fullScreen = !this.fullScreen
         },
@@ -158,6 +172,10 @@ export default {
     mounted(){
         const content = this.$refs.content
         content.innerHTML = this.content
+        ;['dragleave', 'drop', 'dragenter', 'dragover'].forEach((e) => {
+            this.preventDefaultEvent(e)
+        })
+        content.addEventListener('drop', this.toggleDrop, false)
         content.addEventListener('mouseup', this.saveCurrentRange, false)
         content.addEventListener('keyup', () => {
             this.$emit('change', content.innerHTML)

@@ -1,7 +1,7 @@
 /**
- * Vue-html5-editor 1.1.3
+ * Vue-html5-editor 1.1.6
  * https://github.com/realywithoutname/vue-html5-editor
- * build at Wed Dec 06 2017 13:15:42 GMT+0800 (CST)
+ * build at Mon Jan 22 2018 22:58:17 GMT+0800 (CST)
  */
 
 (function (global, factory) {
@@ -308,7 +308,7 @@ var t=new Array(arguments.length-1);if(arguments.length>1){ for(var n=1;n<argume
 e.exports=window.lrz;}])});
 });
 
-var template$3 = "<div> <div v-show=\"upload.status=='ready'\"> <input type=\"text\" v-model=\"width\" :placeholder=\"$parent.locale['please enter width']\"> <input type=\"text\" v-model=\"height\" :placeholder=\"$parent.locale['please enter height']\"> <input type=\"text\" v-model=\"imageUrl\" maxlength=\"255\" :placeholder=\"$parent.locale['please enter a url']\"> <button type=\"button\" @click=\"insertImageUrl\">{{$parent.locale.save}}</button> <input type=\"file\" ref=\"file\" style=\"display: none !important\" @change=\"process\" accept=\"image/png,image/jpeg,image/gif,image/jpg\"> <button type=\"button\" @click=\"pick\">{{$parent.locale.upload}}</button> </div> <div v-if=\"upload.status=='progress'\"> {{$parent.locale.progress}}:{{upload.progressComputable ? $parent.locale.unknown : upload.complete}} </div> <div v-if=\"upload.status=='success'\"> {{$parent.locale[\"please wait\"]}}... </div> <div v-if=\"upload.status=='error'\"> {{$parent.locale.error}}:{{upload.errorMsg}} <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> <div v-if=\"upload.status=='abort'\"> {{$parent.locale.upload}}&nbsp;{{$parent.locale.abort}}, <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> </div> ";
+var template$3 = "<div> <div v-show=\"upload.status=='ready'\"> <input type=\"text\" v-model=\"width\" :placeholder=\"$parent.locale['please enter width']\"> <input type=\"text\" v-model=\"height\" :placeholder=\"$parent.locale['please enter height']\"> <input type=\"text\" v-model=\"imageUrl\" maxlength=\"255\" :placeholder=\"$parent.locale['please enter a url']\"> <button type=\"button\" @click=\"insertImageUrl\">{{$parent.locale.save}}</button> <input type=\"file\" ref=\"file\" style=\"display: none !important\" @change=\"fileChange\" accept=\"image/png,image/jpeg,image/gif,image/jpg\"> <button type=\"button\" @click=\"pick\">{{$parent.locale.upload}}</button> </div> <div v-if=\"upload.status=='progress'\"> {{$parent.locale.progress}}:{{upload.progressComputable ? $parent.locale.unknown : upload.complete}} </div> <div v-if=\"upload.status=='success'\"> {{$parent.locale[\"please wait\"]}}... </div> <div v-if=\"upload.status=='error'\"> {{$parent.locale.error}}:{{upload.errorMsg}} <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> <div v-if=\"upload.status=='abort'\"> {{$parent.locale.upload}}&nbsp;{{$parent.locale.abort}}, <button type=\"button\" @click=\"reset\">{{$parent.locale.reset}}</button> </div> </div> ";
 
 /**
  * Created by peak on 2017/2/10.
@@ -327,6 +327,16 @@ var dashboard$3 = {
                 complete: 0
             }
         }
+    },
+    created: function created() {
+        var this$1 = this;
+
+        this.$on('fileChange', function (file) {
+            if (file && file.type.indexOf('image') === -1) {
+                return this$1.setUploadError(this$1.$parent.locale['Invalid file type'])
+            }
+            this$1.process(file);
+        });
     },
     methods: {
         reset: function reset(){
@@ -351,7 +361,11 @@ var dashboard$3 = {
             this.upload.status = 'error';
             this.upload.errorMsg = msg && msg.toString();
         },
-        process: function process() {
+        fileChange: function fileChange() {
+            var file = this.$refs.file.files[0];
+            this.process(file);
+        },
+        process: function process(file) {
             var this$1 = this;
 
             var config = this.$options.module.config;
@@ -396,7 +410,6 @@ var dashboard$3 = {
                 };
             }
 
-            var file = this.$refs.file.files[0];
             if (file.size > config.sizeLimit) {
                 this.setUploadError(this.$parent.locale['exceed size limit']);
                 return
@@ -788,7 +801,7 @@ var dashboard$5 = {
     template: template$5,
     data: function data(){
         return {
-            version: "1.1.3"
+            version: "1.1.6"
         }
     }
 };
@@ -1529,6 +1542,22 @@ var editor = {
         }
     },
     methods: {
+        preventDefaultEvent: function preventDefaultEvent(eventName) {
+            document.addEventListener(eventName, function (e) {
+                e.preventDefault();
+            }, false);
+        },
+        toggleDrop: function toggleDrop(e) {
+            var this$1 = this;
+
+            var file = e.dataTransfer.files[0];
+            this.toggleDashboard('dashboard-image');
+            this.$nextTick(function () {
+                this$1.$children.forEach(function (children) {
+                    children.$emit('fileChange', file);
+                });
+            });
+        },
         toggleFullScreen: function toggleFullScreen(){
             this.fullScreen = !this.fullScreen;
         },
@@ -1615,7 +1644,11 @@ var editor = {
         var this$1 = this;
 
         var content = this.$refs.content;
-        content.innerHTML = this.content;
+        content.innerHTML = this.content
+        ;['dragleave', 'drop', 'dragenter', 'dragover'].forEach(function (e) {
+            this$1.preventDefaultEvent(e);
+        });
+        content.addEventListener('drop', this.toggleDrop, false);
         content.addEventListener('mouseup', this.saveCurrentRange, false);
         content.addEventListener('keyup', function () {
             this$1.$emit('change', content.innerHTML);
@@ -1701,7 +1734,8 @@ var i18nZhCn = {
     'exceed size limit': '超出大小限制',
     'ready upload...': '准备上传',
     'please enter width': '输入宽',
-    'please enter height': '输入高'
+    'please enter height': '输入高',
+    'Invalid file type': '不接受的文件类型'
 };
 
 var i18nEnUs = {
@@ -1753,7 +1787,8 @@ var i18nEnUs = {
     'exceed size limit': 'exceed size limit',
     'ready upload...': 'ready upload...',
     'please enter width': 'please enter width',
-    'please enter height': 'please enter height'
+    'please enter height': 'please enter height',
+    'Invalid file type': 'Invalid file type.'
 };
 
 /**
@@ -1859,7 +1894,7 @@ var VueHtml5Editor = function VueHtml5Editor(options) {
     Object.keys(customI18n).forEach(function (key) {
         i18n[key] = i18n[key] ? mixin(i18n[key], customI18n[key]) : customI18n[key];
     });
-    var language = options.language || 'en-us';
+    var language = options.language || 'zh-cn';
     var locale = i18n[language];
 
     // showModuleName
