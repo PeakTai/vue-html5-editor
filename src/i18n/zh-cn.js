@@ -1,6 +1,7 @@
 export default {
     align: '对齐方式',
     image: '图片',
+    video: '视频',
     list: '列表',
     link: '链接',
     unlink: '去除链接',
@@ -13,6 +14,7 @@ export default {
     color: '颜色',
     'please enter a url': '请输入地址',
     'create link': '创建链接',
+    'Miss required option': '缺少必要的配置信息。',
     bold: '加粗',
     italic: '倾斜',
     underline: '下划线',
@@ -42,5 +44,9 @@ export default {
     hr: '分隔线',
     undo: '撤消',
     'line height': '行高',
-    'exceed size limit': '超出大小限制'
+    'exceed size limit': '超出大小限制',
+    'ready upload...': '准备上传',
+    'please enter width': '输入宽',
+    'please enter height': '输入高',
+    'Invalid file type': '不接受的文件类型'
 }

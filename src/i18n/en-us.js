@@ -1,6 +1,7 @@
 export default {
     align: 'align',
     image: 'image',
+    video: 'video',
     list: 'list',
     link: 'link',
     unlink: 'unlink',
@@ -13,6 +14,7 @@ export default {
     color: 'color',
     'please enter a url': 'please enter a url',
     'create link': 'create link',
+    'Miss required option': 'Miss required option.',
     bold: 'bold',
     italic: 'italic',
     underline: 'underline',
@@ -42,5 +44,9 @@ export default {
     hr: 'horizontal rule',
     undo: 'undo',
     'line height': 'line height',
-    'exceed size limit': 'exceed size limit'
+    'exceed size limit': 'exceed size limit',
+    'ready upload...': 'ready upload...',
+    'please enter width': 'please enter width',
+    'please enter height': 'please enter height',
+    'Invalid file type': 'Invalid file type.'
 }

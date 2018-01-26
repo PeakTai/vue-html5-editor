@@ -79,7 +79,7 @@ class VueHtml5Editor {
         Object.keys(customI18n).forEach((key) => {
             i18n[key] = i18n[key] ? mixin(i18n[key], customI18n[key]) : customI18n[key]
         })
-        const language = options.language || 'en-us'
+        const language = options.language || 'zh-cn'
         const locale = i18n[language]
 
         // showModuleName

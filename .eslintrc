@@ -52,6 +52,9 @@
       "error",
       "as-needed"
     ],
+    "no-return-assign": "off",
+    "no-underscore-dangle": "off",
+    "consistent-return": "off",
     "import/no-unresolved": "off",
     "import/extensions": [
       "error",
@@ -61,7 +64,7 @@
       }
     ],
     "no-console": [
-      "error",
+      "off",
       {
         "allow": [
           "warn",
