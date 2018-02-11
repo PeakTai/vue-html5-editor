@@ -159,7 +159,7 @@ export default {
         const content = this.$refs.content
         content.innerHTML = this.content
         content.addEventListener('mouseup', this.saveCurrentRange, false)
-        content.addEventListener('keyup', () => {
+        content.addEventListener('input', () => {
             this.$emit('change', content.innerHTML)
             this.saveCurrentRange()
         }, false)
