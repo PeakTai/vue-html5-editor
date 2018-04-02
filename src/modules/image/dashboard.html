@@ -5,7 +5,7 @@
         <input type="text" v-model="imageUrl" maxlength="255" :placeholder="$parent.locale['please enter a url']">
         <button type="button" @click="insertImageUrl">{{$parent.locale.save}}</button>
 
-        <input type="file" ref="file" style="display: none !important;" @change="startUpload"
+        <input type="file" ref="file" style="display: none !important;" @change="process"
                accept="image/png,image/jpeg,image/gif,image/jpg">
         <button type="button" @click="pick">{{$parent.locale.upload}}</button>
     </div>

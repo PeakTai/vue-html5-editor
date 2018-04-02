@@ -307,6 +307,7 @@ export default class RangeHandler {
                 break
             }
             default: {
+                document.execCommand(command, false, arg)
                 break
             }
         }
