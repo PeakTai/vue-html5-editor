@@ -12,6 +12,10 @@ export default {
             required: true,
             default: ''
         },
+        imageDrop:{
+			type:Boolean,
+		    default: true
+		},
         height: {
             type: Number,
             default: 300,
@@ -158,6 +162,11 @@ export default {
     mounted(){
         const content = this.$refs.content
         content.innerHTML = this.content
+        if(!this.imageDrop){
+		    content.addEventListener('drop', function (e) {
+	            e.preventDefault();
+	        }, false);
+	    }
         content.addEventListener('mouseup', this.saveCurrentRange, false)
         content.addEventListener('keyup', () => {
             this.$emit('change', content.innerHTML)
