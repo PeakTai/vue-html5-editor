@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <h1 class="knockout">Try it Yourself Editor!  </h1>
+      <title> Try it Yourself Editor!</title>
+    <style>
+.knockout
+{ color: #7c795d; font-family: 'Droid serif', serif; font-size: 45px; font-weight: normal; line-height: 48px; margin: 0; }
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #FFEFD5;
+}
+
+.active {
+    background-color: #7B68EE;
+}
+</style>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <!-- <link rel="stylesheet" type="text/css" src="mycss.css"> -->
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">My HTML Editor <span class="glyphicon glyphicon-pencil"></span></a>&nbsp; &nbsp; &nbsp;
+    </div>
+    <ul class="nav navbar-nav">
+      <!-- <li class="active"><a href="#">Run</a></li>
+      <li><a href="#">Clear Code area</a></li>
+      <li><a href="#">Clear Display Area</a></li> -->
+      <button class="btn btn-success navbar-btn" onClick="javascript:textareaHTML();">Run</button>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+      <button class="btn btn-primary navbar-btn" onClick="javascript:removeHTMLcode();">Clear Code Area</button>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+      <button class="btn btn-danger navbar-btn" onClick="javascript:removeiframedata();">Clear Display Area</button>
+    </ul>
+    <!-- <button class="btn btn-danger navbar-btn">Button</button> -->
+  </div>
+</nav>
+    <!-- <ul>
+    <li><a  href="#">My HTML Editor <span class="glyphicon glyphicon-pencil"></span></a></li>
+    <li><a class="active" href="#">Run</a></li>
+    <li><a href="#">Clear Code area</a></li>
+    <li><a href="#">Clear Display Area</a></li>
+  </ul> -->
+  <textarea id='htmlcode' rows="30" cols="75" placeholder="Please Write your HTML code here..." onkeyup="javascript:textareaHTML();">
+  </textarea>
+   <iframe id="tiframe" src="about:blank" scrolling="yes" width=700 height=605 style='float:right' ></iframe>
+
+   <!-- <button onClick="javascript:injectHTML();">Inject HTML</button> -->
+</body>
+<script language="javascript">
+function textareaHTML(){
+    var iframe = document.getElementById('tiframe');
+    var htmlcode = document.getElementById('htmlcode').value;
+    var iframedoc = iframe.document;
+        if (iframe.contentDocument)
+         iframedoc = iframe.contentDocument;
+        else if (iframe.contentWindow)
+            iframedoc = iframe.contentWindow.document;
+     if (iframedoc){
+         iframedoc.open();
+         iframedoc.writeln(htmlcode);
+         iframedoc.close();
+     } else {
+        alert('Cannot display HTML code result into iframe...');
+     }
+
+}
+function removeHTMLcode(){
+    document.getElementById('htmlcode').value = " ";
+}
+function removeiframedata(){
+    var iframe = document.getElementById('tiframe');
+    var html_string = " ";
+    var iframedoc = iframe.document;
+        if (iframe.contentDocument)
+            iframedoc = iframe.contentDocument;
+        else if (iframe.contentWindow)
+            iframedoc = iframe.contentWindow.document;
+
+     if (iframedoc){
+         iframedoc.open();
+         iframedoc.writeln(html_string);
+         iframedoc.close();
+     }
+
+}
+</script>
+</html>
